@@ -42,6 +42,8 @@ The buzzer is switched by Q1 from an ESP32-C3 GPIO through base resistor R8. The
 
 The first firmware is in `programming/`. The recommended version is `programming/micropython/`; it implements animated eyes, light-following behavior, motion reactions, button navigation, buzzer feedback, LED status, and USB serial debug output.
 
+The printable enclosure design is in `enclosure/`. It includes a parametric OpenSCAD case with a bottom tray, OLED faceplate, exposed buttons, exposed light sensors, USB-C access, Qwiic access, and antenna clearance.
+
 ## Development Checks
 
 Useful local checks:
