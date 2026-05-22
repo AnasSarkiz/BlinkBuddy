@@ -19,7 +19,7 @@ The purpose of the board is to act as a small interactive display badge or senso
 
 ## How The Board Works
 
-USB-C provides 5 V on `VBUS_5V`. ESD1 protects USB D+, USB D-, and VBUS with a USBLC6-2SC6 device. The XC6206 regulator converts VBUS to the board `V3_3` rail used by the ESP32-C3, OLED, accelerometer, Qwiic connector, light sensors, CH340C, LED, and buzzer driver.
+USB-C provides 5 V on `VBUS_5V`. ESD1 protects USB D+, USB D-, and VBUS with a USBLC6-2SC6 device. The XC6220B331MR-G regulator converts VBUS to the board `V3_3` rail used by the ESP32-C3, OLED, accelerometer, Qwiic connector, light sensors, CH340C, LED, and buzzer driver. Its `CE` enable pin is tied to VBUS so the 3.3 V rail turns on whenever USB power is present.
 
 The ESP32-C3 is the main processor. It communicates with the OLED, LIS3DHTR accelerometer, and Qwiic connector over the shared I2C bus. R3 and R4 provide the I2C pullups to 3.3 V.
 
@@ -51,12 +51,28 @@ Useful local checks:
 ```bash
 bun run typecheck
 bunx tsci check netlist
+bunx tsci check schematic-placement
 bunx tsci check placement
+bunx tsci check trace-length USB_DP
+bunx tsci check trace-length USB_DM
+bunx tsci check trace-length I2C_SDA
+bunx tsci check trace-length I2C_SCL
+bunx tsci check trace-length LDR_LEFT
+bunx tsci check trace-length LDR_RIGHT
 bunx tsci build
+bunx tsci build --pcb-png --pcb-svgs
 ```
 
 Generated build artifacts are written to `dist/index/`.
 
+Latest local review, May 22, 2026:
+
+- Typecheck, netlist, placement DRC, trace-length checks, plain build, and PCB PNG/SVG preview export completed.
+- `dist/index/circuit.json`, `dist/index/pcb.svg`, and `dist/index/pcb.png` were generated.
+- `bunx tsci check schematic-placement` exits successfully but reports schematic-only box/label padding issues. These are not PCB-order blockers.
+- `bunx tsci check routing-difficulty` was attempted but did not finish after dispatching solvers, so it is documented as inconclusive in `BOARD_REVIEW.md`.
+- Supplier footprint fetches still fail in this local environment because supplier URLs are not reachable here. Re-check BOM/footprints in the manufacturer preview before ordering.
+
 ## Before Ordering
 
-Read `BOARD_REVIEW.md` before ordering. The main electrical nets were reviewed and the netlist check passes, but the board still needs internet-enabled supplier footprint/BOM verification and manufacturer assembly-preview review.
+Read `BOARD_REVIEW.md` before ordering. The main electrical nets were reviewed and the build/preview checks now pass locally, but the board still needs internet-enabled supplier footprint/BOM verification and manufacturer assembly-preview review.

@@ -1,18 +1,18 @@
 # BlinkBuddy Board Order Review
 
-Date: May 21, 2026
+Date: May 22, 2026
 
 ## Final Order Gate
 
-Prototype order status: **OK to order after JLC/manufacturer preview review**.
+Prototype order status: **OK to order as a prototype after JLC/manufacturer preview review**.
 
-I do not see a board-code blocker in the current nets or placements. The remaining must-do step is the manufacturer preview: confirm part rotations, top-side assembly, OLED mechanical fit, USB-C connector position, and exposed left/right light sensors before paying for the order.
+I do not see a connection/netlist blocker in the current board code, build output, or PCB preview export. The 3.3 V regulator has been upgraded from the previous 200 mA XC6206P332MR-G to `XC6220B331MR-G` / JLC `C86534`, a 1 A fixed 3.3 V SOT-25 regulator. The remaining mechanical must-do step is the manufacturer preview: confirm part rotations, top-side assembly, OLED mechanical fit, USB-C connector position, and exposed left/right light sensors before paying for the order.
 
 ## Verdict
 
-The current board code passes typecheck, netlist, placement DRC, and plain `tsci build`. The main electrical connections are coherent. OLED and ESP32-C3 placement are treated as accepted by the board owner.
+The current board code passes typecheck, netlist, placement DRC, plain `tsci build`, and PCB PNG/SVG preview export. The main signal connections are coherent. OLED and ESP32-C3 placement are treated as accepted by the board owner.
 
-Before ordering, the remaining blockers are supplier/BOM verification with internet access and manufacturer assembly preview. The ESP32-C3 auto-program path has now been added in the board code.
+Before ordering, the remaining blockers are supplier/BOM verification with internet access and manufacturer assembly preview. The ESP32-C3 auto-program path is present in the board code.
 
 ## Current Check Results
 
@@ -20,14 +20,24 @@ Before ordering, the remaining blockers are supplier/BOM verification with inter
 | --- | --- | --- |
 | `bun run typecheck` | Pass | TypeScript completed successfully. |
 | `bunx tsci check netlist` | Pass | 0 errors, 0 warnings. |
-| `bunx tsci check placement` | Pass | 0 DRC errors, 0 warnings. The report still lists accepted OLED body intrusions for parts intentionally placed under the display. |
-| `bunx tsci build` | Pass with warnings | `dist/index/circuit.json` was generated. Supplier footprint fetches failed because this environment cannot reach JLC/supplier URLs. |
-| `bunx tsci build --pcb-png --pcb-svgs` | Preview export fails | Circuit generation passes, but PCB SVG/PNG rendering fails on a tscircuit renderer route-point error. Do not trust old `dist/index/pcb.svg` or `dist/index/pcb.png` as current outputs. |
+| `bunx tsci check schematic-placement` | Exit 0 with schematic-only issues | Reports schematic label/pin padding issues for U1, U3, BZ1, Q1, Q2, and Q3. This does not affect PCB fabrication and was not treated as an order blocker because schematic cleanup was intentionally deprioritized. |
+| `bunx tsci check placement` | Pass | 0 DRC errors, 0 warnings. The report lists 23 accepted OLED body intrusions for parts intentionally placed under the display. |
+| `bunx tsci check trace-length USB_DP` | Pass | `USB_DP` total length: 82.98 mm. |
+| `bunx tsci check trace-length USB_DM` | Pass | `USB_DM` total length: 83.38 mm. USB pair mismatch is about 0.40 mm. |
+| `bunx tsci check trace-length I2C_SDA` | Pass | `I2C_SDA` total length: 107.01 mm. |
+| `bunx tsci check trace-length I2C_SCL` | Pass | `I2C_SCL` total length: 106.12 mm. |
+| `bunx tsci check trace-length LDR_LEFT` | Pass | `LDR_LEFT` total length: 82.65 mm. Firmware should average/filter this ADC reading. |
+| `bunx tsci check trace-length LDR_RIGHT` | Pass | `LDR_RIGHT` total length: 16.68 mm. |
+| `bunx tsci check routing-difficulty` | Inconclusive | The command dispatched 10 sub-solvers but produced no final result after an extended wait. It was treated as a CLI/tool hang, not a board-code failure. |
+| `bunx tsci build` | Pass with warnings | `dist/index/circuit.json` was generated. Supplier footprint fetches failed because this environment cannot reach JLC/supplier URLs; imported part metadata warnings remain. |
+| `bunx tsci build --pcb-png --pcb-svgs` | Pass with warnings | The previous PCB preview renderer issue is fixed. Current `dist/index/pcb.svg` and `dist/index/pcb.png` were generated successfully. Supplier fetch and metadata warnings remain. |
 | Assembly side check | Pass | All placed components in `index.circuit.tsx` are on the top layer. The only bottom-layer item found is the bottom ground copper pour, not an assembled component. |
 
-Generated current artifact:
+Generated current artifacts:
 
 - `dist/index/circuit.json`
+- `dist/index/pcb.svg`
+- `dist/index/pcb.png`
 
 ## Confirmed Fixes
 
@@ -39,6 +49,7 @@ Generated current artifact:
 | Silkscreen labels | Custom labels were reviewed and placed by their real features: USB-C, Qwiic pin order, left/right sensors, button labels, antenna keepout, and testpoints. |
 | Sensor placement | Reviewed. The light sensors are left/right at the board edge and the motion sensor is on the left side with usable clearance. |
 | ESP32-C3 programming flow | Added CH340C DTR/RTS auto-program network using Q2/Q3, R10/R11, BOOT pull-up R12, and EN capacitor C7. |
+| 3.3 V regulator headroom | Upgraded U3 to `XC6220B331MR-G`, JLC `C86534`, fixed 3.3 V, 1 A, SOT-25. |
 | Single assembly side | Components are on the top assembly side. |
 
 ## Confirmed Electrical Connections
@@ -47,7 +58,7 @@ Generated current artifact:
 | --- | --- |
 | USB-C power | J1 VBUS pins connect to `VBUS_5V`; shield and ground pins connect to `GND`. |
 | USB-C CC resistors | CC1 and CC2 each have a 5.1k pull-down to `GND`, correct for a USB-C sink/device. |
-| 3.3 V regulator | `VBUS_5V` feeds the XC6206 3.3 V regulator. Input and output capacitors are present. |
+| 3.3 V regulator | `VBUS_5V` feeds `XC6220B331MR-G` U3. U3 `VIN` and `CE` connect to `VBUS_5V`, `VOUT` connects to `V3_3`, and `VSS` connects to `GND`. Input and output capacitors are present. |
 | USB serial | CH340C D+ and D- connect to USB D+ and D-. CH340C TXD/RXD connect to ESP32-C3 RXD/TXD. |
 | Auto-program | CH340C DTR/RTS connect through Q2/Q3 to ESP32-C3 `EN` and `IO9` / `BOOT`. R5 pulls `EN` up, R12 pulls `BOOT` up, and C7 adds reset delay on `EN`. The logic matches Espressif's ESP32-C3 auto-download truth table. |
 | ESP32-C3 power | ESP32-C3 3V3 pins connect to `V3_3`; ground pins and exposed pad connect to `GND`. |
@@ -58,6 +69,24 @@ Generated current artifact:
 | Buzzer | ESP32-C3 drives Q1 through R8; Q1 switches the buzzer low side. |
 | LED | ESP32-C3 drives D1 through R9; the LED returns to `GND`. |
 | Testpoints | Testpoints exist for `GND`, `3V3`, `TX`, `RX`, `EN`, and `BOOT`. |
+
+## Deep Electrical Review Addendum
+
+### Resolved - 3.3 V Regulator Current Margin
+
+U3 has been upgraded to `XC6220B331MR-G`, JLC `C86534`, a fixed 3.3 V SOT-25 LDO rated at 1 A. This gives enough current headroom for ESP32-C3 radio peaks plus the OLED, CH340C, LIS3DHTR, LED, Qwiic connector, and buzzer pulses.
+
+The replacement uses the existing regulator area with a small SOT-25 footprint. Its enable pin `CE` is tied to `VBUS_5V`, so the 3.3 V rail turns on automatically when USB power is present. C5 remains on the input side and C6 remains on the output side.
+
+### P2 - GPIO8 Button Can Affect Boot If Held During Reset
+
+`BTN_RIGHT` uses ESP32-C3 `IO8`, and the button shorts it to ground. GPIO8 is also an ESP32-C3 strapping pin, so holding the right button while plugging in USB or resetting can affect boot. Normal use should be fine because the firmware enables an internal pull-up and the button is normally open, but the user guide should say not to hold RIGHT during reset. If this board is revised, move that button to a non-strapping GPIO or add a stronger external pull-up strategy verified against Espressif's strapping table.
+
+## Live JLC Stock Spot Check
+
+Live/recent JLC pages were checked on May 22, 2026 for the selected order-critical parts. The following imported JLC part numbers show stock in recent JLC results: ESP32-C3 module `C2934560`, USB-C `C165948`, Qwiic connector `C160404`, upgraded regulator `C86534`, CH340C `C84681`, LIS3DHTR `C15134`, OLED `C7466000`, GL5528 `C125627`, switches `C273519`, buzzer `C94598`, USB ESD `C7519`, LED `C2286`, S8050 `C2146`, and the resistor/capacitor families used by the design.
+
+Important caveat: the OLED `C7466000` is listed as wave-solder/high assembly difficulty on JLC, so it must be confirmed in the JLC PCBA quote and assembly preview. The local `tsci build` still cannot fetch supplier footprints from this sandbox, so the JLC preview remains the source of truth for rotations, footprints, and assembly availability.
 
 ## Sensor Placement Review
 
@@ -92,17 +121,17 @@ The design uses JLC/LCSC parts, but this environment cannot fetch live supplier 
 
 ### P1 - Manufacturer Preview Required
 
-Because several parts are intentionally under the large OLED body and the local PCB image exporter fails, the final visual sign-off must happen in the JLC/manufacturer viewer. Check top-side placement, pick-and-place rotation, OLED outline, USB-C access, Qwiic access, button access, and that both LDR sensing faces remain exposed.
+Because several parts are intentionally under the large OLED body, the final visual sign-off must happen in the JLC/manufacturer viewer even though local PCB PNG/SVG export now works. Check top-side placement, pick-and-place rotation, OLED outline, USB-C access, Qwiic access, button access, and that both LDR sensing faces remain exposed.
 
-### P2 - PCB Preview Export Fails
+### Resolved - PCB Preview Export
 
-`bunx tsci build --pcb-png --pcb-svgs` currently fails while rendering PCB SVG/PNG previews, even though circuit generation passes. This appears to be a tscircuit renderer route-point issue. Use `dist/index/circuit.json` and the manufacturer preview until this export issue is resolved.
+`bunx tsci build --pcb-png --pcb-svgs` now completes and writes `dist/index/pcb.svg` and `dist/index/pcb.png`. This removes the previous local preview-export blocker.
 
 ### P2 - USB Routing Has No Explicit Impedance Constraint
 
 USB D+/D- length matching is acceptable for full-speed USB, and ESD1 protects the USB lines. The design still does not explicitly constrain USB differential impedance.
 
-Measured trace lengths:
+Measured trace lengths from May 22, 2026:
 
 - `USB_DP`: 82.98 mm total.
 - `USB_DM`: 83.38 mm total.
@@ -112,9 +141,15 @@ Measured trace lengths:
 
 The left LDR ADC net is about 82.65 mm total. This is acceptable for a slow light sensor, but firmware should average/filter ADC readings.
 
+The right LDR ADC net is much shorter at about 16.68 mm total.
+
 ### P2 - Imported Component Metadata Is Incomplete
 
 The build reports underspecified pin metadata and missing `requires_power` / `requires_ground` attributes on imported parts. The explicit netlist was reviewed and passes, but incomplete metadata limits automated semantic checks.
+
+### P3 - Routing Difficulty Check Did Not Complete
+
+`bunx tsci check routing-difficulty` was run on May 22, 2026. It detected the entrypoint and dispatched 10 sub-solvers, then produced no final report after an extended wait. This looks like a CLI/tool hang. It is not currently treated as an order blocker because `tsci build`, netlist, placement DRC, trace-length checks, and PCB PNG/SVG export all complete.
 
 ## Order Recommendation
 
@@ -123,4 +158,4 @@ The design is coherent enough for a prototype after manufacturer preview review.
 1. Supplier/BOM/footprint validation passes with internet access.
 2. JLC/manufacturer assembly preview confirms rotations, side, and placement.
 3. Auto-program behavior is smoke-tested on the first assembled prototype.
-4. PCB SVG/PNG preview export is either fixed or replaced by a verified manufacturer preview.
+4. The first physical fit check confirms the OLED, buttons, LDR windows, USB-C, Qwiic connector, and enclosure clearance.

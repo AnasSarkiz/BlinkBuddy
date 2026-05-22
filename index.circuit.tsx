@@ -16,7 +16,7 @@ import { SM04B_SRSS_TB_LF__SN_ } from "./imports/SM04B_SRSS_TB_LF__SN_";
 import { TL3301AF160QG } from "./imports/TL3301AF160QG";
 import { TYPE_C_31_M_12 } from "./imports/TYPE_C_31_M_12";
 import { USBLC6_2SC6 } from "./imports/USBLC6_2SC6";
-import { XC6206P332MR_G } from "./imports/XC6206P332MR_G";
+import { XC6220B331MR_G } from "./imports/XC6220B331MR_G";
 
 const signalTrace = "0.18mm";
 const powerTrace = "0.45mm";
@@ -44,7 +44,7 @@ export default () => (
 			layer="top"
 		/>
 
-		<XC6206P332MR_G
+		<XC6220B331MR_G
 			name="U3"
 			pcbX={-25}
 			pcbY={6}
@@ -218,7 +218,7 @@ export default () => (
 		<CL10A106MQ8NNNC
 			name="C5"
 			pcbX={-22.5}
-			pcbY={2.5}
+			pcbY={2}
 			pcbRotation={90}
 			layer="top"
 		/>
@@ -327,9 +327,10 @@ export default () => (
 		<trace from=".ESD1 > .VBUS" to="net.VBUS_5V" thickness={signalTrace} />
 		<trace from=".ESD1 > .GND" to="net.GND" thickness={signalTrace} />
 
-		<trace from=".U3 > .Vin" to="net.VBUS_5V" thickness={powerTrace} />
-		<trace from=".U3 > .Vout" to="net.V3_3" thickness={powerTrace} />
-		<trace from=".U3 > .GND" to="net.GND" thickness={powerTrace} />
+		<trace from=".U3 > .VIN" to="net.VBUS_5V" thickness={powerTrace} />
+		<trace from=".U3 > .CE" to="net.VBUS_5V" thickness={signalTrace} />
+		<trace from=".U3 > .VOUT" to="net.V3_3" thickness={powerTrace} />
+		<trace from=".U3 > .VSS" to="net.GND" thickness={powerTrace} />
 		<trace from=".C4 > .pin1" to="net.VBUS_5V" thickness={powerTrace} />
 		<trace from=".C4 > .pin2" to="net.GND" thickness={powerTrace} />
 		<trace from=".C5 > .pin1" to="net.VBUS_5V" thickness={powerTrace} />
