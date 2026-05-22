@@ -38,16 +38,39 @@ The OLED/module mounting holes were double-checked against the board STEP coordi
 | Bottom-right | `(35.1244, -17.0)` | `(35.1244, -17.0)` | Aligned |
 | Top-right | `(35.1244, 22.0)` | `(35.1244, 22.0)` | Aligned |
 
-The board/OLED mounting holes are about `3.1 mm` diameter. The closure design now uses:
+The board/OLED mounting holes are about `3.1 mm` diameter. The screw-fastened design now uses:
 
-- `6.0 mm` low base screw bosses aligned under the four holes.
-- `1.75 mm` pilot holes in the bosses for M2 self-tapping/thread-forming screws.
-- `2.4 mm` clearance holes through the top cover.
-- `4.6 mm` shallow counterbores for M2 screw heads.
+- `5.6 mm` low base pedestals aligned under the four holes.
+- `2.6 mm` slim M2 screw posts that pass through the `3.1 mm` board/OLED holes without colliding.
+- `1.45 mm` pilot holes in those posts for M2 self-tapping/thread-forming screws.
+- `3.2 mm` top-cover screw clearance holes, intentionally oversized so the holes are visible and easy to use.
+- `6.0 mm` shallow counterbores for M2 screw heads.
 
-The top cover closes by putting M2 screws through the top cover and the board/OLED holes, then into the low base bosses. The bosses do **not** run up through the board holes, so they should not collide with the `3.1 mm` mounting holes.
+The top cover is fastened by M2 screws through the top cover into the four slim support posts. The underside locating lip and small friction ribs still help align the cover and keep it from rattling.
 
-Recommended screws for first print: start with M2 x 18 mm or M2 x 20 mm, then shorten if the real printed stack is lower than the preview.
+The front/bottom lip is intentionally only in the center. The left and right bottom corners stay open so the underside lip does not shade or collide with the LDR sensor windows.
+
+## Fit Audit
+
+Current calculated fit values:
+
+| Check | Value | Result |
+| --- | --- | --- |
+| PCB size | `82.0 mm x 60.0 mm` | Matches board code and STEP measurement. |
+| Base inside tray | `82.7 mm x 60.7 mm` | Gives `0.35 mm` PCB clearance per side. |
+| Base outside size | `86.7 mm x 64.7 mm` | Includes `2.0 mm` wall plus PCB clearance. |
+| Top locating lip clearance | `0.30 mm` per side | Should fit normal FDM prints; tune if tight/loose. |
+| Snap rib remaining clearance | about `0.16 mm` | Intentionally snug; sand ribs if needed. |
+| Screw post diameter | `2.6 mm` in `3.1 mm` holes | About `0.25 mm` radial clearance. |
+| M2 pilot hole | `1.45 mm` | Intended for M2 self-tapping/thread-forming screws. |
+| Top screw clearance | `3.2 mm` | Oversized so M2 screws pass cleanly and the holes are visible. |
+| Screw post top gap | about `0.31 mm` below cover | Prevents post/cover collision. |
+| Screw bridge before bite | about `4.6 mm` from counterbore | M2 x 12 mm or M2 x 14 mm should still get useful thread bite. |
+| Top cover/base overlap | about `3.5 mm` | Lip engages the base wall instead of just sitting on top. |
+| Remaining bottom lip to LDR centers | about `17.7 mm` | Clear of the `9.5 mm` LDR windows. |
+| Button plunger depth | about `11.8 mm` | Targets the real switch plungers with `0.4 mm` press gap. |
+
+This audit checks the SCAD dimensions against the board coordinates. The one thing it cannot prove locally is the exact OLED/module vertical stack height, because the available STEP file contains the PCB/pads but not the full assembled OLED height.
 
 ## Files
 
@@ -132,7 +155,7 @@ Print orientation:
 
 - `base`: flat bottom on the bed.
 - `top`: outside face on the bed if your slicer bridges the cutouts cleanly; otherwise rotate for best finish.
-- `buttons`: flat side on the bed.
+- `buttons`: stem side on the bed; use a brim if the tall stems wobble while printing.
 
 ## Fit Tuning
 
@@ -163,20 +186,63 @@ oled_bezel_height = 3.2;
 oled_clearance_margin = 1.8;
 ```
 
-If the screws are too tight or too loose in the printed posts, tune:
+If the top cover is too loose or too tight in the body, tune:
 
 ```scad
-screw_boss_height = 4.0;
-m2_pilot_d = 1.75;
-m2_clearance_d = 2.4;
-screw_head_d = 4.6;
+top_lip_clearance = 0.30;
+snap_rib_thickness = 0.28;
+snap_rib_length = 10.0;
 ```
+
+Use these rules:
+
+- If the cover is too tight, increase `top_lip_clearance` or decrease `snap_rib_thickness`.
+- If the cover is loose, decrease `top_lip_clearance` or increase `snap_rib_thickness` slightly.
+- Sand the snap ribs lightly after printing if the first fit is close but too stiff.
+
+If the screws are too tight or too loose in the support posts, tune:
+
+```scad
+m2_pilot_d = 1.45;
+m2_clearance_d = 3.2;
+screw_head_d = 6.0;
+```
+
+Recommended first screws: M2 x 12 mm or M2 x 14 mm. The posts stop just below the cover so they do not collide with the cover holes, and the screw bridges that small gap before biting into the post.
 
 If the buttons rub, increase:
 
 ```scad
 button_cutout = 8.2;
 ```
+
+The printed button XY centers match the real board switches:
+
+| Printed cap | Board switch | XY |
+| --- | --- | --- |
+| Left | `SW1` | `(-18, -23)` |
+| OK | `SW2` | `(0, -23)` |
+| Right | `SW3` | `(18, -23)` |
+
+The caps now include a long underside plunger. The default assumes the tactile switch button/plunger top is about `5.0 mm` above the PCB. With the current case stack, the plunger reaches down to about `0.4 mm` above the switch before pressing, so it should click after a short travel instead of holding the switch down all the time.
+
+The orange finger pads sit above the raised blue button brow, not just above the flat top cover. This prevents the brow from visually cutting into the button caps in the assembly preview.
+
+If the printed buttons do not click the real switches, tune:
+
+```scad
+button_brow_height = 1.0;
+switch_plunger_height = 5.0;
+button_press_gap = 0.4;
+button_rest_gap_above_brow = 0.35;
+button_stem_d = 3.0;
+```
+
+Use these rules:
+
+- If a button floats and never clicks, increase `switch_plunger_height` or decrease `button_press_gap`.
+- If a button is always pressed, decrease `switch_plunger_height` or increase `button_press_gap`.
+- If a button wobbles too much, increase `button_guide_d`, but keep it smaller than `button_cutout`.
 
 ## Important Before Final Print
 

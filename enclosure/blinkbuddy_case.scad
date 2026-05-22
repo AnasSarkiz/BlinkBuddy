@@ -30,14 +30,27 @@ oled_clearance_margin = 1.8;
 oled_bezel_height = 3.2;
 pcb_support_height = 1.25;
 mount_hole_d = 3.1;
-locator_pin_d = 2.45;
-locator_pin_height = 17.0;
-locator_pedestal_d = 5.6;
+mount_post_d = 2.6;
+mount_post_clearance_to_cover = 0.3;
+mount_post_height = top_air_gap - pcb_support_height - mount_post_clearance_to_cover;
+mount_pedestal_d = 5.6;
+m2_pilot_d = 1.45;
+m2_clearance_d = 3.2;
+screw_head_d = 6.0;
+screw_head_depth = 1.4;
+top_lip_depth = 4.0;
+top_lip_wall = 1.2;
+top_lip_clearance = 0.30;
+snap_rib_thickness = 0.28;
+snap_rib_length = 10.0;
+snap_rib_height = 1.2;
 
 outer_w = pcb_w + 2 * (wall + pcb_clearance);
 outer_h = pcb_h + 2 * (wall + pcb_clearance);
 inner_w = pcb_w + 2 * pcb_clearance;
 inner_h = pcb_h + 2 * pcb_clearance;
+lip_x_edge = inner_w / 2 - top_lip_clearance - top_lip_wall / 2;
+lip_y_edge = inner_h / 2 - top_lip_clearance - top_lip_wall / 2;
 
 // Board coordinate features. Same XY origin as PCB.
 oled_x = 1;
@@ -54,11 +67,25 @@ qwiic_y = 4;
 
 button_y = -23;
 button_cutout = 8.2;
+button_brow_height = 1.0;
+switch_plunger_height = 5.0;
+button_press_gap = 0.4;
+button_rest_gap_above_brow = 0.35;
+button_top_d = 9.6;
+button_top_height = 1.6;
+button_dome_height = 1.1;
+button_guide_d = 7.0;
+button_stem_d = 3.0;
 button_positions = [
   [-18, button_y],
   [0, button_y],
   [18, button_y]
 ];
+button_stem_depth = max(
+  2.0,
+  bottom_thickness + top_air_gap + top_plate_thickness + button_brow_height + button_rest_gap_above_brow
+    - (bottom_thickness + pcb_support_height + pcb_thickness + switch_plunger_height + button_press_gap)
+);
 
 ldr_window_d = 9.5;
 ldr_positions = [
@@ -92,21 +119,68 @@ module slot_2d(w, h, r = 1.5) {
   rounded_rect_2d(w, h, min(r, min(w, h) / 2 - 0.05));
 }
 
-module oled_locator_post(x, y) {
+module oled_screw_post(x, y) {
   translate([x, y, bottom_thickness]) {
-    // Wide low pedestal supports the PCB around the OLED/module hole.
-    cylinder(d = locator_pedestal_d, h = pcb_support_height);
+    difference() {
+      union() {
+        // Wide low pedestal supports the PCB around the OLED/module hole.
+        cylinder(d = mount_pedestal_d, h = pcb_support_height);
 
-    // Slim locator pin fits through the 3.1 mm mounting hole without colliding.
-    translate([0, 0, pcb_support_height - 0.01]) {
-      cylinder(d = locator_pin_d, h = locator_pin_height);
+        // Slim screw post passes through the 3.1 mm board/OLED holes.
+        translate([0, 0, pcb_support_height - 0.01]) {
+          cylinder(d = mount_post_d, h = mount_post_height);
+        }
+      }
+
+      // M2 self-tapping pilot hole. The screw comes down from the top cover.
+      translate([0, 0, -0.1]) {
+        cylinder(d = m2_pilot_d, h = pcb_support_height + mount_post_height + 0.3);
+      }
     }
+  }
+}
+
+module lip_bar(x, y, w, h) {
+  translate([x, y, -top_lip_depth / 2]) {
+    cube([w, h, top_lip_depth], center = true);
+  }
+}
+
+module snap_rib_x(x, y) {
+  translate([x, y, -top_lip_depth + snap_rib_height]) {
+    cube([snap_rib_thickness, snap_rib_length, snap_rib_height], center = true);
+  }
+}
+
+module snap_rib_y(x, y) {
+  translate([x, y, -top_lip_depth + snap_rib_height]) {
+    cube([snap_rib_length, snap_rib_thickness, snap_rib_height], center = true);
+  }
+}
+
+module top_retention_lip() {
+  // Split inner lip: guides the cover into the base while leaving USB, Qwiic,
+  // antenna, and sensor areas open.
+  union() {
+    lip_bar(-18, lip_y_edge, 42, top_lip_wall);
+    lip_bar(0, -lip_y_edge, 28, top_lip_wall);
+
+    lip_bar(-lip_x_edge, -18, top_lip_wall, 20);
+    lip_bar(-lip_x_edge, 21, top_lip_wall, 14);
+    lip_bar(lip_x_edge, -22, top_lip_wall, 12);
+    lip_bar(lip_x_edge, 20, top_lip_wall, 16);
+
+    // Tiny friction ribs make the cover snug. Sand them down if the fit is too tight.
+    snap_rib_y(0, -lip_y_edge - top_lip_wall / 2 - snap_rib_thickness / 2);
+    snap_rib_x(-lip_x_edge - top_lip_wall / 2 - snap_rib_thickness / 2, -18);
+    snap_rib_x(lip_x_edge + top_lip_wall / 2 + snap_rib_thickness / 2, -22);
+    snap_rib_x(lip_x_edge + top_lip_wall / 2 + snap_rib_thickness / 2, 20);
   }
 }
 
 module pcb_shadow(z = 0.3) {
   color(pcb_color) {
-    translate([0, 0, bottom_thickness + 0.15]) {
+    translate([0, 0, bottom_thickness + pcb_support_height]) {
       rounded_box(pcb_w, pcb_h, z, pcb_radius);
     }
   }
@@ -136,9 +210,9 @@ module base_tray() {
     }
   }
 
-  // Board supports aligned to OLED/module holes. The slim pins fit through the 3.1 mm holes.
+  // Screw posts aligned to OLED/module holes. The slim posts fit through the 3.1 mm holes.
   for (p = oled_mount_holes) {
-    oled_locator_post(p[0], p[1]);
+    oled_screw_post(p[0], p[1]);
   }
 }
 
@@ -147,6 +221,8 @@ module top_faceplate(zpos = 0) {
     difference() {
       union() {
         rounded_box(outer_w, outer_h, top_plate_thickness, corner_radius);
+
+        top_retention_lip();
 
         oled_bezel();
 
@@ -172,10 +248,13 @@ module top_faceplate(zpos = 0) {
         }
       }
 
-      // OLED screw access holes.
+      // M2 screw clearance holes and shallow counterbores.
       for (p = oled_mount_holes) {
         translate([p[0], p[1], -0.2]) {
-          cylinder(d = mount_hole_d + 1.0, h = top_plate_thickness + oled_bezel_height + 1.2);
+          cylinder(d = m2_clearance_d, h = top_plate_thickness + oled_bezel_height + 1.2);
+        }
+        translate([p[0], p[1], top_plate_thickness + oled_bezel_height - screw_head_depth]) {
+          cylinder(d = screw_head_d, h = screw_head_depth + 0.4);
         }
       }
 
@@ -240,9 +319,20 @@ module button_caps() {
     p = button_positions[i];
     translate([p[0], p[1], 0]) {
       union() {
-        cylinder(d = 7.1, h = 2.2);
-        translate([0, 0, 2.2]) {
-          cylinder(d1 = 7.1, d2 = 6.4, h = 1.3);
+        // Finger pad is wider than the top opening, so the loose cap cannot fall through.
+        cylinder(d = button_top_d, h = button_top_height);
+        translate([0, 0, button_top_height]) {
+          cylinder(d1 = button_top_d, d2 = button_top_d - 1.0, h = button_dome_height);
+        }
+
+        // Guide section slides through the cover hole and keeps the cap centered.
+        translate([0, 0, -(top_plate_thickness + button_brow_height + button_rest_gap_above_brow + 0.2)]) {
+          cylinder(d = button_guide_d, h = top_plate_thickness + button_brow_height + button_rest_gap_above_brow + 0.8);
+        }
+
+        // Long plunger reaches down to the real tactile switch button.
+        translate([0, 0, -button_stem_depth]) {
+          cylinder(d = button_stem_d, h = button_stem_depth + 0.15);
         }
       }
     }
@@ -282,7 +372,7 @@ module assembly_preview() {
   pcb_shadow();
   colored_top_faceplate(bottom_thickness + top_air_gap);
   color(button_color) {
-    translate([0, 0, bottom_thickness + top_air_gap + top_plate_thickness + 0.2]) {
+    translate([0, 0, bottom_thickness + top_air_gap + top_plate_thickness + button_brow_height + button_rest_gap_above_brow]) {
       button_caps();
     }
   }
@@ -298,7 +388,9 @@ if (part == "base") {
 } else if (part == "top") {
   top_faceplate();
 } else if (part == "buttons") {
-  button_caps();
+  translate([0, 0, button_stem_depth]) {
+    button_caps();
+  }
 } else if (part == "sensor_windows") {
   sensor_windows();
 } else {
