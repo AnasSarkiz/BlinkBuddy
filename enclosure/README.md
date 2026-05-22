@@ -27,6 +27,28 @@ That STEP file appears to contain the PCB/pads only, not the full component and 
 
 For exact enclosure tuning, export a full assembly model if tscircuit offers one. GLB or GLTF may include the visible 3D components better than the current STEP export.
 
+## Mount Hole / Screw Closure Check
+
+The OLED/module mounting holes were double-checked against the board STEP coordinates:
+
+| Hole | Enclosure XY | STEP XY | Status |
+| --- | --- | --- | --- |
+| Top-left | `(-32.8755, 22.0)` | `(-32.8755, 22.0)` | Aligned |
+| Bottom-left | `(-32.8755, -17.0)` | `(-32.8755, -17.0)` | Aligned |
+| Bottom-right | `(35.1244, -17.0)` | `(35.1244, -17.0)` | Aligned |
+| Top-right | `(35.1244, 22.0)` | `(35.1244, 22.0)` | Aligned |
+
+The board/OLED mounting holes are about `3.1 mm` diameter. The closure design now uses:
+
+- `6.0 mm` low base screw bosses aligned under the four holes.
+- `1.75 mm` pilot holes in the bosses for M2 self-tapping/thread-forming screws.
+- `2.4 mm` clearance holes through the top cover.
+- `4.6 mm` shallow counterbores for M2 screw heads.
+
+The top cover closes by putting M2 screws through the top cover and the board/OLED holes, then into the low base bosses. The bosses do **not** run up through the board holes, so they should not collide with the `3.1 mm` mounting holes.
+
+Recommended screws for first print: start with M2 x 18 mm or M2 x 20 mm, then shorten if the real printed stack is lower than the preview.
+
 ## Files
 
 | File | Purpose |
@@ -47,7 +69,6 @@ The OpenSCAD file can generate:
 
 The OpenSCAD assembly preview includes colors:
 
-- Base: matte black.
 - Base: midnight blue.
 - Top cover: rich blue.
 - OLED bezel: near-navy.
@@ -140,6 +161,15 @@ If the OLED bezel feels too low or too thin, tune:
 ```scad
 oled_bezel_height = 3.2;
 oled_clearance_margin = 1.8;
+```
+
+If the screws are too tight or too loose in the printed posts, tune:
+
+```scad
+screw_boss_height = 4.0;
+m2_pilot_d = 1.75;
+m2_clearance_d = 2.4;
+screw_head_d = 4.6;
 ```
 
 If the buttons rub, increase:

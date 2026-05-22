@@ -28,6 +28,11 @@ top_air_gap = 16.5;
 corner_radius = 4.0;
 oled_clearance_margin = 1.8;
 oled_bezel_height = 3.2;
+pcb_support_height = 1.25;
+mount_hole_d = 3.1;
+locator_pin_d = 2.45;
+locator_pin_height = 17.0;
+locator_pedestal_d = 5.6;
 
 outer_w = pcb_w + 2 * (wall + pcb_clearance);
 outer_h = pcb_h + 2 * (wall + pcb_clearance);
@@ -87,13 +92,14 @@ module slot_2d(w, h, r = 1.5) {
   rounded_rect_2d(w, h, min(r, min(w, h) / 2 - 0.05));
 }
 
-module screw_post(x, y, height, outer_d = 5.6, hole_d = 2.3) {
+module oled_locator_post(x, y) {
   translate([x, y, bottom_thickness]) {
-    difference() {
-      cylinder(d = outer_d, h = height);
-      translate([0, 0, -0.1]) {
-        cylinder(d = hole_d, h = height + 0.2);
-      }
+    // Wide low pedestal supports the PCB around the OLED/module hole.
+    cylinder(d = locator_pedestal_d, h = pcb_support_height);
+
+    // Slim locator pin fits through the 3.1 mm mounting hole without colliding.
+    translate([0, 0, pcb_support_height - 0.01]) {
+      cylinder(d = locator_pin_d, h = locator_pin_height);
     }
   }
 }
@@ -130,18 +136,9 @@ module base_tray() {
     }
   }
 
-  // Board supports aligned to OLED/module holes.
+  // Board supports aligned to OLED/module holes. The slim pins fit through the 3.1 mm holes.
   for (p = oled_mount_holes) {
-    screw_post(p[0], p[1], base_wall_height - 0.3);
-  }
-
-  // Small corner rests for the PCB.
-  for (x = [-pcb_w / 2 + 6, pcb_w / 2 - 6]) {
-    for (y = [-pcb_h / 2 + 6, pcb_h / 2 - 6]) {
-      translate([x, y, bottom_thickness]) {
-        cylinder(d = 5.0, h = 1.2);
-      }
-    }
+    oled_locator_post(p[0], p[1]);
   }
 }
 
@@ -178,7 +175,7 @@ module top_faceplate(zpos = 0) {
       // OLED screw access holes.
       for (p = oled_mount_holes) {
         translate([p[0], p[1], -0.2]) {
-          cylinder(d = 3.9, h = top_plate_thickness + oled_bezel_height + 1.2);
+          cylinder(d = mount_hole_d + 1.0, h = top_plate_thickness + oled_bezel_height + 1.2);
         }
       }
 
