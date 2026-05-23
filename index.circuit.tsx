@@ -27,6 +27,8 @@ export default () => (
 		height="60mm"
 		layers={2}
 		borderRadius="2mm"
+		minViaPadDiameter={0.45}
+		minViaHoleDiameter={0.3}
 		title="BlinkBuddy Sense Qwiic"
 	>
 		<TYPE_C_31_M_12
@@ -38,7 +40,7 @@ export default () => (
 		/>
 		<SM04B_SRSS_TB_LF__SN_
 			name="J2"
-			pcbX={-38.2} 
+			pcbX={-38.2}
 			pcbY={4}
 			pcbRotation={270}
 			layer="top"
@@ -61,30 +63,40 @@ export default () => (
 		/>
 
 		<LIS3DHTR name="U4" pcbX={-37} pcbY={-9} pcbRotation={0} layer="top" />
-		<GL5528 name="LDR_L" pcbX={-31.5}
-			pcbY={-26.4} pcbRotation={90} layer="top" />
-		<GL5528 name="LDR_R" pcbX={31.5}
-			pcbY={-26.2} pcbRotation={270} layer="top" />
+		<GL5528
+			name="LDR_L"
+			pcbX={-31.5}
+			pcbY={-26.4}
+			pcbRotation={90}
+			layer="top"
+		/>
+		<GL5528
+			name="LDR_R"
+			pcbX={31.5}
+			pcbY={-26.2}
+			pcbRotation={270}
+			layer="top"
+		/>
 		<HS242L03B2C01 name="OLED1" pcbX={1} pcbY={2.5} layer="top" />
 
 		<TL3301AF160QG
 			name="SW1"
-				pcbX={-18}
-				pcbY={-23}
+			pcbX={-18}
+			pcbY={-23}
 			pcbRotation={90}
 			layer="top"
 		/>
 		<TL3301AF160QG
 			name="SW2"
 			pcbX={0}
-				pcbY={-23}
+			pcbY={-23}
 			pcbRotation={90}
 			layer="top"
 		/>
 		<TL3301AF160QG
 			name="SW3"
-				pcbX={18}
-				pcbY={-23}
+			pcbX={18}
+			pcbY={-23}
 			pcbRotation={90}
 			layer="top"
 		/>
@@ -92,8 +104,8 @@ export default () => (
 		<MLT_5020 name="BZ1" pcbX={-27} pcbY={-1} pcbRotation={0} layer="top" />
 		<S8050_J3Y_RANGE_200_350_
 			name="Q1"
-				pcbX={-19}
-				pcbY={2}
+			pcbX={-19}
+			pcbY={2}
 			pcbRotation={90}
 			layer="top"
 		/>
@@ -117,11 +129,17 @@ export default () => (
 		<A_0603WAF5101T5E
 			name="R1"
 			pcbX={17}
-			pcbY={25}
+			pcbY={20}
 			pcbRotation={90}
 			layer="top"
 		/>
-		<A_0603WAF5101T5E name="R2" pcbX={31} pcbY={25} layer="top" />
+		<A_0603WAF5101T5E
+			name="R2"
+			pcbX={31}
+			pcbY={20}
+			pcbRotation={270}
+			layer="top"
+		/>
 		<A_0603WAF4701T5E
 			name="R3"
 			pcbX={-36.2}
@@ -459,114 +477,161 @@ export default () => (
 			name="GND_TOP"
 			connectsTo="net.GND"
 			layer="top"
-				clearance="0.25mm"
-				outline={[
-					{ x: -41, y: -29 },
-					{ x: 40, y: -29 },
-					{ x: 40, y: -15 },
-					{ x: 30, y: -15 },
-					{ x: 30, y: 5 },
-					{ x: 40, y: 5 },
-					{ x: 40, y: 29 },
-					{ x: -41, y: 29 },
-				]}
-			/>
+			clearance="0.25mm"
+			outline={[
+				{ x: -41, y: -29 },
+				{ x: 40, y: -29 },
+				{ x: 40, y: -15 },
+				{ x: 30, y: -15 },
+				{ x: 30, y: 5 },
+				{ x: 40, y: 5 },
+				{ x: 40, y: 29 },
+				{ x: -41, y: 29 },
+			]}
+		/>
 		<copperpour
 			name="GND_BOTTOM"
 			connectsTo="net.GND"
 			layer="bottom"
-				clearance="0.25mm"
-				outline={[
-					{ x: -40, y: -29 },
-					{ x: 40, y: -29 },
-					{ x: 40, y: -15 },
-					{ x: 30, y: -15 },
-					{ x: 30, y: 5 },
-					{ x: 40, y: 5 },
-					{ x: 40, y: 29 },
-					{ x: -40, y: 29 },
-				]}
-			/>
+			clearance="0.25mm"
+			outline={[
+				{ x: -40, y: -29 },
+				{ x: 40, y: -29 },
+				{ x: 40, y: -15 },
+				{ x: 30, y: -15 },
+				{ x: 30, y: 5 },
+				{ x: 40, y: 5 },
+				{ x: 40, y: 29 },
+				{ x: -40, y: 29 },
+			]}
+		/>
 
 		<silkscreentext
-				text="BlinkBuddy Sense Qwiic"
-				pcbX={0}
-				pcbY={-28}
+			text="BlinkBuddy Sense Qwiic"
+			pcbX={0}
+			pcbY={-28}
 			fontSize="0.9mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="USB-C"
-				pcbX={35}
-				pcbY={25}
+			text="USB-C"
+			pcbX={35}
+			pcbY={25}
 			fontSize="0.8mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="QWIIC"
-				pcbX={-40}
-				pcbY={4}
+			text="QWIIC"
+			pcbX={-40}
+			pcbY={4}
 			fontSize="0.55mm"
 			anchorAlignment="center"
 			pcbRotation={90}
 		/>
 		<silkscreentext
-				text="G 3V SDA SCL"
-				pcbX={-40}
-				pcbY={13}
+			text="G 3V SDA SCL"
+			pcbX={-40}
+			pcbY={13}
 			fontSize="0.45mm"
 			anchorAlignment="center"
 			pcbRotation={90}
 		/>
 		<silkscreentext
-				text="L"
-				pcbX={-37.6}
-				pcbY={-26.4}
+			text="L"
+			pcbX={-37.6}
+			pcbY={-26.4}
 			fontSize="1mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="R"
-				pcbX={37.6}
-				pcbY={-26.2}
+			text="R"
+			pcbX={37.6}
+			pcbY={-26.2}
 			fontSize="1mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="LEFT"
-				pcbX={-18}
-				pcbY={-19.05}
+			text="LEFT"
+			pcbX={-18}
+			pcbY={-19.05}
 			fontSize="0.55mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="OK"
-				pcbX={0}
-				pcbY={-19.05}
+			text="OK"
+			pcbX={0}
+			pcbY={-19.05}
 			fontSize="0.55mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="RIGHT"
-				pcbX={18}
-				pcbY={-19.05}
+			text="RIGHT"
+			pcbX={18}
+			pcbY={-19.05}
 			fontSize="0.55mm"
 			anchorAlignment="center"
 		/>
 		<silkscreentext
-				text="ANTENNA NO COPPER"
-				pcbX={38.5}
-				pcbY={-5}
+			text="ANTENNA NO COPPER"
+			pcbX={38.5}
+			pcbY={-5}
 			fontSize="0.45mm"
 			anchorAlignment="center"
 			pcbRotation={90}
 		/>
 		<silkscreentext
-				text="GND  3V3  TX  RX  EN  BOOT"
-				pcbX={0}
-				pcbY={28.7}
+			text="GND  3V3  TX  RX  EN  BOOT"
+			pcbX={0}
+			pcbY={28.7}
 			fontSize="0.65mm"
 			anchorAlignment="center"
+		/>
+		<silkscreentext
+			text="tscircuit"
+			pcbX={0}
+			pcbY={10}
+			fontSize="4mm"
+			anchorAlignment="center"
+			layers={["top"]}
+		/>
+		<silkscreentext
+			text="ts"
+			pcbX={-33}
+			isKnockout={true}
+			pcbY={27}
+			knockoutPadding={"0.5mm"}
+			fontSize="4mm"
+			anchorAlignment="center"
+			layers={["top"]}
+		/>
+		<silkscreentext
+			text="created with tscircuit"
+			pcbX={0}
+			pcbY={0}
+			fontSize="4mm"
+			anchorAlignment="center"
+			pcbRotation={180}
+			layers={["bottom"]}
+		/>
+		<silkscreentext
+			text="ts"
+			pcbX={0}
+			isKnockout={true}
+			pcbY={-18}
+			knockoutPadding={"0.5mm"}
+			fontSize="10mm"
+			anchorAlignment="center"
+			pcbRotation={180}
+			layers={["bottom"]}
+		/>
+		<silkscreentext
+			text="by Anas Sarkiz"
+			pcbX={0}
+			pcbY={20}
+			fontSize="2mm"
+			anchorAlignment="center"
+			pcbRotation={180}
+			layers={["bottom"]}
 		/>
 	</board>
 );
