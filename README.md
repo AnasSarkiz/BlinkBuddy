@@ -65,14 +65,16 @@ bunx tsci build --pcb-png --pcb-svgs
 
 Generated build artifacts are written to `dist/index/`.
 
-Latest local review, May 22, 2026:
+Latest local review, May 23, 2026:
 
 - Typecheck, netlist, placement DRC, trace-length checks, plain build, and PCB PNG/SVG preview export completed.
 - `dist/index/circuit.json`, `dist/index/pcb.svg`, and `dist/index/pcb.png` were generated.
+- A generated PCB route endpoint audit was added after a TP_GND / TP_3V3 hover concern. The source netlist was clean, but the old generated PCB output had a GND route endpoint on `R3.pin1` (`V3_3`). R3/R4 were moved and the rebuilt output now passes the audit with zero cross-net endpoints.
+- The local `../../pcb-viewer` connectivity map now keeps `TP_GND` and `TP_3V3` on separate rendered nets, so hovering either testpoint should not highlight the other.
 - `bunx tsci check schematic-placement` exits successfully but reports schematic-only box/label padding issues. These are not PCB-order blockers.
 - `bunx tsci check routing-difficulty` was attempted but did not finish after dispatching solvers, so it is documented as inconclusive in `BOARD_REVIEW.md`.
-- Supplier footprint fetches still fail in this local environment because supplier URLs are not reachable here. Re-check BOM/footprints in the manufacturer preview before ordering.
+- The internet-enabled local build completed, but the manufacturer preview is still the source of truth for BOM availability, footprints, rotations, and assembly side.
 
 ## Before Ordering
 
-Read `BOARD_REVIEW.md` before ordering. The main electrical nets were reviewed and the build/preview checks now pass locally, but the board still needs internet-enabled supplier footprint/BOM verification and manufacturer assembly-preview review.
+Read `BOARD_REVIEW.md` before ordering. The main electrical nets were reviewed and the build/preview checks now pass locally, but the board still needs manufacturer supplier/BOM verification and assembly-preview review.

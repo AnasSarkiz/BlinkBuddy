@@ -142,15 +142,15 @@ export default () => (
 		/>
 		<A_0603WAF4701T5E
 			name="R3"
-			pcbX={-36.2}
-			pcbY={10.8}
+			pcbX={-30.8}
+			pcbY={11.2}
 			pcbRotation={90}
 			layer="top"
 		/>
 		<A_0603WAF4701T5E
 			name="R4"
-			pcbX={-36.2}
-			pcbY={14.5}
+			pcbX={-30.8}
+			pcbY={14.8}
 			pcbRotation={90}
 			layer="top"
 		/>
