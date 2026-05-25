@@ -28,9 +28,13 @@ It makes the board behave like an interactive OLED buddy:
 | Right light sensor | `GPIO1` |
 | Left button | `GPIO6` |
 | OK button | `GPIO7` |
-| Right button | `GPIO8` |
+| Right button | `GPIO8` boot strapping pin |
 | Status LED | `GPIO3` |
 | Buzzer | `GPIO10` |
+
+## Boot / Reset Note
+
+Do not hold the RIGHT button while plugging in USB-C, pressing reset, or starting a firmware upload. RIGHT is wired to ESP32-C3 `GPIO8`, which is also a boot strapping pin, and holding it low during reset can affect boot mode.
 
 ## Install Option A: MicroPython Recommended
 
@@ -110,7 +114,7 @@ Screens:
 After the assembled board arrives:
 
 1. Plug in USB-C and confirm the board appears as a CH340 serial port.
-2. Upload firmware.
+2. Keep RIGHT released, then upload firmware.
 3. Open serial monitor at `115200`.
 4. Confirm OLED startup screen appears.
 5. Cover the left and right LDRs separately and confirm the eyes move.

@@ -34,6 +34,7 @@ The buzzer is switched by Q1 from an ESP32-C3 GPIO through base resistor R8. The
 ## Firmware Expectations
 
 - Configure button GPIOs with internal pullups.
+- Do not hold the RIGHT button while plugging in USB-C or resetting the board; it is on ESP32-C3 `GPIO8`, which is also a boot strapping pin.
 - Read the LDR ADC channels with averaging or filtering.
 - Use I2C for the OLED and LIS3DHTR accelerometer.
 - Drive the buzzer GPIO with a tone/PWM output if sound patterns are needed.
@@ -65,6 +66,11 @@ bunx tsci build --pcb-png --pcb-svgs
 
 Generated build artifacts are written to `dist/index/`.
 
+Latest project status, May 25, 2026:
+
+- The first BlinkBuddy prototype order has been placed and is under production.
+- The remaining work has shifted from pre-order review to incoming inspection, firmware flashing, and first-article bring-up when the boards arrive.
+
 Latest local review, May 23, 2026:
 
 - Typecheck, netlist, placement DRC, trace-length checks, plain build, and PCB PNG/SVG preview export completed.
@@ -75,6 +81,6 @@ Latest local review, May 23, 2026:
 - `bunx tsci check routing-difficulty` was attempted but did not finish after dispatching solvers, so it is documented as inconclusive in `BOARD_REVIEW.md`.
 - The internet-enabled local build completed, but the manufacturer preview is still the source of truth for BOM availability, footprints, rotations, and assembly side.
 
-## Before Ordering
+## Production / Bring-Up Notes
 
-Read `BOARD_REVIEW.md` before ordering. The main electrical nets were reviewed and the build/preview checks now pass locally, but the board still needs manufacturer supplier/BOM verification and assembly-preview review.
+Read `BOARD_REVIEW.md` for the order review and first-article checklist. The first prototype order is now under production, so the next critical steps are incoming inspection, firmware flashing, USB serial verification, OLED/button/sensor bring-up, and enclosure fit checking. For first bring-up, keep the RIGHT button released during power-on/reset because it shares ESP32-C3 `GPIO8`.

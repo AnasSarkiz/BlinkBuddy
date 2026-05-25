@@ -1,20 +1,20 @@
 # BlinkBuddy Board Order Review
 
-Date: May 23, 2026
+Date: May 25, 2026
 
 ## Final Order Gate
 
-Prototype order status: **OK to order as a prototype after JLC/manufacturer preview review**.
+Prototype order status: **Ordered and under production**.
 
-I do not see a remaining connection/netlist blocker in the current board code, build output, or PCB preview export. A May 23 hover concern exposed a real generated PCB route mismatch, where a GND generated route endpoint landed on the 3.3 V side of R3. R3/R4 were moved away from the Qwiic ground pads, the board was rebuilt, and a generated PCB route audit now passes with zero cross-net route endpoints.
+The first BlinkBuddy prototype order has been placed and is under production as of May 25, 2026. I do not see a remaining connection/netlist blocker in the board code, build output, or PCB preview export used for the order. A May 23 hover concern exposed a real generated PCB route mismatch, where a GND generated route endpoint landed on the 3.3 V side of R3. R3/R4 were moved away from the Qwiic ground pads, the board was rebuilt, and a generated PCB route audit now passes with zero cross-net route endpoints.
 
-The 3.3 V regulator has been upgraded from the previous 200 mA XC6206P332MR-G to `XC6220B331MR-G` / JLC `C86534`, a 1 A fixed 3.3 V SOT-25 regulator. The remaining mechanical must-do step is the manufacturer preview: confirm part rotations, top-side assembly, OLED mechanical fit, USB-C connector position, and exposed left/right light sensors before paying for the order.
+The 3.3 V regulator has been upgraded from the previous 200 mA XC6206P332MR-G to `XC6220B331MR-G` / JLC `C86534`, a 1 A fixed 3.3 V SOT-25 regulator. Because the order is now in production, the remaining risk-management work is first-article inspection: confirm part rotations, top-side assembly, OLED mechanical fit, USB-C connector position, and exposed left/right light sensors on the delivered boards.
 
 ## Verdict
 
 The current board code passes typecheck, netlist, placement DRC, plain `tsci build`, and PCB PNG/SVG preview export. The main signal connections are coherent. OLED and ESP32-C3 placement are treated as accepted by the board owner.
 
-Before ordering, the remaining blockers are supplier/BOM verification in the manufacturer quote flow and manufacturer assembly preview. The ESP32-C3 auto-program path is present in the board code.
+The pre-order blockers have now become delivery inspection items. When the boards arrive, verify supplier substitutions, assembly orientation, solder quality, OLED fit, USB-C access, Qwiic access, LDR exposure, and ESP32-C3 auto-program behavior on the first assembled unit.
 
 ## Current Check Results
 
@@ -101,7 +101,7 @@ The replacement uses the existing regulator area with a small SOT-25 footprint. 
 
 ### P2 - GPIO8 Button Can Affect Boot If Held During Reset
 
-`BTN_RIGHT` uses ESP32-C3 `IO8`, and the button shorts it to ground. GPIO8 is also an ESP32-C3 strapping pin, so holding the right button while plugging in USB or resetting can affect boot. Normal use should be fine because the firmware enables an internal pull-up and the button is normally open, but the user guide should say not to hold RIGHT during reset. If this board is revised, move that button to a non-strapping GPIO or add a stronger external pull-up strategy verified against Espressif's strapping table.
+`BTN_RIGHT` uses ESP32-C3 `IO8`, and the button shorts it to ground. GPIO8 is also an ESP32-C3 strapping pin, so holding the right button while plugging in USB or resetting can affect boot. Normal use should be fine because the firmware enables an internal pull-up and the button is normally open. The README and programming notes now warn users not to hold RIGHT during reset. If this board is revised, move that button to a non-strapping GPIO or add a stronger external pull-up strategy verified against Espressif's strapping table.
 
 ## Live JLC Stock Spot Check
 
@@ -134,15 +134,15 @@ The provided PCB and 3D-viewer screenshots were reviewed on May 21, 2026.
 
 Visual caution: confirm in the final manufacturer preview that the OLED part is available for the selected assembly service and that the OLED mounting/connector height matches the real part. The screenshots show the intended clearance, but this is still a mechanical/BOM confirmation item before paying for assembly.
 
-## Current Issues Before Ordering
+## Current Issues For First Article
 
-### P1 - Supplier Footprint/BOM Verification In Manufacturer Flow
+### P1 - Supplier Footprint/BOM Verification On Delivered Boards
 
-The design uses JLC/LCSC parts and the internet-enabled local build completed, but this is still not a substitute for the JLC/manufacturer quote and assembly preview. Before ordering, verify every part, footprint, rotation, and assembly-side mapping in the manufacturer preview.
+The prototype order is now in production. When the boards arrive, verify the actual assembled parts, footprints, rotations, and assembly-side mapping against the intended design.
 
-### P1 - Manufacturer Preview Required
+### P1 - First-Article Visual Inspection Required
 
-Because several parts are intentionally under the large OLED body, the final visual sign-off must happen in the JLC/manufacturer viewer even though local PCB PNG/SVG export now works. Check top-side placement, pick-and-place rotation, OLED outline, USB-C access, Qwiic access, button access, and that both LDR sensing faces remain exposed.
+Because several parts are intentionally under the large OLED body, visually inspect the first delivered board before powering several units. Check top-side placement, pick-and-place rotation, OLED outline, USB-C access, Qwiic access, button access, and that both LDR sensing faces remain exposed.
 
 ### Resolved - PCB Preview Export
 
@@ -174,9 +174,9 @@ The build reports underspecified pin metadata and missing `requires_power` / `re
 
 ## Order Recommendation
 
-The design is coherent enough for a prototype after manufacturer preview review. Do not place a production order until:
+The prototype order has been placed and is under production. Do not scale beyond this prototype run until:
 
-1. Supplier/BOM/footprint validation passes with internet access.
-2. JLC/manufacturer assembly preview confirms rotations, side, and placement.
+1. The delivered supplier/BOM/footprint choices match the intended design.
+2. First-article inspection confirms rotations, side, and placement.
 3. Auto-program behavior is smoke-tested on the first assembled prototype.
 4. The first physical fit check confirms the OLED, buttons, LDR windows, USB-C, Qwiic connector, and enclosure clearance.
