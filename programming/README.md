@@ -4,6 +4,8 @@ This folder contains firmware for the BlinkBuddy board.
 
 Recommended path: use `micropython/` first. It is easier to edit, upload, and tune after the board arrives.
 
+If you just received the assembled board, start with `FIRST_BRINGUP.md`.
+
 The older `src/main.cpp` + `platformio.ini` firmware is kept as an Arduino/PlatformIO alternative.
 
 It makes the board behave like an interactive OLED buddy:
@@ -44,7 +46,7 @@ Open:
 programming/micropython/README.md
 ```
 
-That version includes `boot.py`, `main.py`, and the OLED driver. It can be uploaded with `mpremote` after flashing ESP32-C3 MicroPython.
+That version includes one self-contained `main.py` with the OLED driver and board behavior. It can be uploaded with `mpremote` after flashing ESP32-C3 MicroPython.
 
 ## Install Option B: PlatformIO / Arduino C++
 

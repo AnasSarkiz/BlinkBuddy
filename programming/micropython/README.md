@@ -2,6 +2,8 @@
 
 This is the recommended first firmware path for BlinkBuddy.
 
+If this is the first time powering a newly received board, read `../FIRST_BRINGUP.md` first.
+
 It runs on ESP32-C3 MicroPython and makes the board work as an interactive OLED buddy:
 
 - Animated eyes on the OLED.
@@ -16,7 +18,7 @@ It runs on ESP32-C3 MicroPython and makes the board work as an interactive OLED 
 
 | File | Purpose |
 | --- | --- |
-| `main.py` | Complete BlinkBuddy application, including OLED driver and board behavior. |
+| `main.py` | Complete BlinkBuddy application, including OLED driver, serial diagnostics, and board behavior. |
 
 ## Install Tools
 
@@ -71,6 +73,16 @@ Open the serial console:
 mpremote connect /dev/cu.wchusbserialXXXX
 ```
 
+Expected startup serial output should look similar to:
+
+```txt
+BlinkBuddy MicroPython firmware
+I2C scan: ['0x19', '0x3c']
+OLED OK at 0x3c
+LIS3DH: ok
+BlinkBuddy app running
+```
+
 ## Expected Behavior
 
 On boot:
@@ -111,4 +123,4 @@ If serial debug works but the OLED stays blank:
 
 1. Check OLED power and I2C soldering.
 2. Confirm OLED I2C address with the serial scan printed at startup.
-3. Try changing `OLED_ADDR` in `main.py` from `0x3C` to `0x3D`.
+3. If the scan shows neither `0x3C` nor `0x3D`, inspect OLED soldering and the shared I2C traces.

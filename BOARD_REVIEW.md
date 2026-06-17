@@ -1,6 +1,6 @@
 # BlinkBuddy Board Order Review
 
-Date: May 25, 2026
+Date: May 28, 2026
 
 ## Final Order Gate
 
@@ -9,6 +9,30 @@ Prototype order status: **Ordered and under production**.
 The first BlinkBuddy prototype order has been placed and is under production as of May 25, 2026. I do not see a remaining connection/netlist blocker in the board code, build output, or PCB preview export used for the order. A May 23 hover concern exposed a real generated PCB route mismatch, where a GND generated route endpoint landed on the 3.3 V side of R3. R3/R4 were moved away from the Qwiic ground pads, the board was rebuilt, and a generated PCB route audit now passes with zero cross-net route endpoints.
 
 The 3.3 V regulator has been upgraded from the previous 200 mA XC6206P332MR-G to `XC6220B331MR-G` / JLC `C86534`, a 1 A fixed 3.3 V SOT-25 regulator. Because the order is now in production, the remaining risk-management work is first-article inspection: confirm part rotations, top-side assembly, OLED mechanical fit, USB-C connector position, and exposed left/right light sensors on the delivered boards.
+
+## JLC SMT Confirmation - May 28, 2026
+
+JLC asked for confirmation of U2 polarity/placement and reported a package mismatch for J1.
+
+U2 is `CH340C`, JLC `C84681`, placed on the top side with `pcbRotation={0}`. The generated PCB coordinates place U2 pin 1 / `GND` at the lower-left pad, matching the polarity marker shown in the JLC corrected placement preview. The source netlist and generated `dist/index/circuit.json` agree on all connected U2 pins:
+
+| U2 pin | Signal | Verified net |
+| --- | --- | --- |
+| 1 | `GND` | `GND` |
+| 2 | `TXD` | `ESP_RX` |
+| 3 | `RXD` | `ESP_TX` |
+| 4 | `V3` | `V3_3` |
+| 5 | `D_POS` | `USB_DP` |
+| 6 | `D_NEG` | `USB_DM` |
+| 13 | `DTR` | `USB_DTR` |
+| 14 | `RTS` | `USB_RTS` |
+| 16 | `VCC` | `V3_3` |
+
+Unused CH340C pins 7, 8, 9, 10, 11, 12, and 15 have no generated PCB trace endpoints. A generated route endpoint audit of the U2 pads found `violations: []`: every `pcb_trace` endpoint touching U2 lands on the expected `source_net_*` from the generated circuit JSON. `bunx tsci check netlist` was rerun on May 28 and reported `Errors: 0` and `Warnings: 0`.
+
+Conclusion for JLC: U2 polarity, placement, and routed connections are correct, so it is OK to proceed with U2 as shown.
+
+For J1, the existing PCB copper and holes cannot be changed during SMT assembly. A replacement USB-C connector is only acceptable if JLC can provide a direct footprint-compatible and pin-compatible substitute for the already-fabricated pads. If the replacement part requires different pad geometry, holes, shell tabs, or pin mapping, the safe options are to cancel/reorder with a corrected PCB or leave J1 unpopulated and hand-solder a compatible connector later.
 
 ## Verdict
 
@@ -21,7 +45,7 @@ The pre-order blockers have now become delivery inspection items. When the board
 | Check | Result | Notes |
 | --- | --- | --- |
 | `bun run typecheck` | Pass | TypeScript completed successfully. |
-| `bunx tsci check netlist` | Pass | 0 errors, 0 warnings. Rechecked May 23, 2026 after the TP_GND / TP_3V3 hover concern; `TP_GND` is only on `GND`, and `TP_3V3` is only on `V3_3`. |
+| `bunx tsci check netlist` | Pass | 0 errors, 0 warnings. Rechecked May 28, 2026 for the JLC U2 SMT confirmation; U2 pin nets match the generated circuit JSON. |
 | Generated PCB route endpoint audit | Pass | Custom audit of every `pcb_trace` endpoint found 0 cross-net endpoints after moving R3/R4. This specifically checks the generated PCB JSON, not only the source netlist. |
 | PCB-viewer connectivity map check | Pass | Using `../../pcb-viewer`'s `circuit-json-to-connectivity-map`, `TP_GND` and `TP_3V3` are now on separate rendered connectivity nets and do not include each other on hover. |
 | `bunx tsci check schematic-placement` | Exit 0 with schematic-only issues | Reports schematic label/pin padding issues for U1, U3, BZ1, Q1, Q2, and Q3. This does not affect PCB fabrication and was not treated as an order blocker because schematic cleanup was intentionally deprioritized. |

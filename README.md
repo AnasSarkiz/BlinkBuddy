@@ -66,9 +66,11 @@ bunx tsci build --pcb-png --pcb-svgs
 
 Generated build artifacts are written to `dist/index/`.
 
-Latest project status, May 25, 2026:
+Latest project status, May 28, 2026:
 
 - The first BlinkBuddy prototype order has been placed and is under production.
+- JLC asked for SMT confirmation. U2 / CH340C polarity and routed connections were rechecked against `dist/index/circuit.json`; U2 is OK to proceed as shown.
+- J1 / USB-C still needs a JLC assembly decision because the selected connector package does not match the already-fabricated pads. Only a footprint-compatible replacement should be accepted for this order.
 - The remaining work has shifted from pre-order review to incoming inspection, firmware flashing, and first-article bring-up when the boards arrive.
 
 Latest local review, May 23, 2026:
