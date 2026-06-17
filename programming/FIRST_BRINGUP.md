@@ -104,9 +104,10 @@ On a good first boot:
 1. The buzzer beeps once.
 2. The red status LED blinks about twice per second.
 3. The OLED shows BlinkBuddy eyes.
-4. Cover the left LDR and right LDR separately; the serial values should change and the eyes should move.
-5. Press LEFT, OK, and RIGHT; serial should print button messages, the buzzer should chirp, and the OLED screen should change.
-6. Shake or tilt the board; `movement` should increase in the serial log and the eyes should blink.
+4. Leave the board still; the eyes should naturally blink every few seconds.
+5. Cover the left LDR and right LDR separately; the serial values should change and the eyes should move.
+6. Press LEFT, OK, and RIGHT; serial should print button messages, the buzzer should chirp, and the OLED screen should change.
+7. Shake or tilt the board; `movement` should increase in the serial log and the eyes should blink.
 
 ## 7. If Upload Does Not Start
 

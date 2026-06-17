@@ -22,6 +22,9 @@ constexpr uint32_t SerialBaud = 115200;
 constexpr uint16_t DebounceMs = 35;
 constexpr uint16_t UiFrameMs = 80;
 constexpr uint16_t SensorFrameMs = 120;
+constexpr uint16_t BlinkDurationMs = 170;
+constexpr uint16_t IdleBlinkBaseMs = 3000;
+constexpr uint16_t IdleBlinkSpreadMs = 3000;
 
 // Large 4-pin I2C OLED. If the screen is blank, try the SSD1306 constructor below.
 U8G2_SSD1309_128X64_NONAME0_F_HW_I2C display(U8G2_R0, U8X8_PIN_NONE);
@@ -74,6 +77,7 @@ float movement = 0;
 uint32_t lastUiMs = 0;
 uint32_t lastSensorMs = 0;
 uint32_t blinkUntilMs = 0;
+uint32_t nextIdleBlinkMs = 0;
 uint32_t lastSerialMs = 0;
 
 int eyeOffset = 0;
@@ -93,6 +97,18 @@ void previousScreen() {
   const uint8_t current = static_cast<uint8_t>(screen);
   screen = static_cast<Screen>(current == 0 ? 2 : current - 1);
   beep(1300, 30);
+}
+
+void scheduleIdleBlink(uint32_t now) {
+  const uint32_t variation =
+      (static_cast<uint32_t>(ldrLeftRaw + ldrRightRaw) + (now / 37)) %
+      IdleBlinkSpreadMs;
+  nextIdleBlinkMs = now + IdleBlinkBaseMs + variation;
+}
+
+void triggerBlink(uint32_t now, uint16_t durationMs = BlinkDurationMs) {
+  blinkUntilMs = now + durationMs;
+  scheduleIdleBlink(now);
 }
 
 int smoothAnalogRead(uint8_t pin) {
@@ -126,7 +142,7 @@ void readSensors() {
     accelZ = event.acceleration.z;
 
     if (movement > 8.0f) {
-      blinkUntilMs = millis() + 180;
+      triggerBlink(millis());
     }
   }
 }
@@ -273,6 +289,7 @@ void setup() {
 
   Serial.println("BlinkBuddy firmware started");
   Serial.println(lisReady ? "LIS3DH detected at 0x19" : "LIS3DH not detected");
+  scheduleIdleBlink(millis());
 }
 
 void loop() {
@@ -282,11 +299,15 @@ void loop() {
     previousScreen();
   }
   if (btnOk.update()) {
-    blinkUntilMs = now + 180;
+    triggerBlink(now);
     beep(2200, 35);
   }
   if (btnRight.update()) {
     nextScreen();
+  }
+
+  if (static_cast<int32_t>(now - nextIdleBlinkMs) >= 0) {
+    triggerBlink(now);
   }
 
   if (now - lastSensorMs >= SensorFrameMs) {

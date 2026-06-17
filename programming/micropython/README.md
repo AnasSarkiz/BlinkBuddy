@@ -7,6 +7,7 @@ If this is the first time powering a newly received board, read `../FIRST_BRINGU
 It runs on ESP32-C3 MicroPython and makes the board work as an interactive OLED buddy:
 
 - Animated eyes on the OLED.
+- Natural idle blinking even when the board is not moving.
 - Eyes follow left/right light using the two LDR sensors.
 - Shake/motion blink reaction from the LIS3DHTR accelerometer.
 - `LEFT`, `OK`, `RIGHT` button navigation.
@@ -110,6 +111,7 @@ Light behavior:
 - More light on left sensor: eyes look left.
 - More light on right sensor: eyes look right.
 - Low light: sleepy eyes.
+- No motion required: eyes blink naturally every few seconds.
 
 Motion behavior:
 

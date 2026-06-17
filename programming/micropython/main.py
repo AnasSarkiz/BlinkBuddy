@@ -135,6 +135,9 @@ LIS3DH_ADDR = const(0x19)
 SCREEN_EYES = const(0)
 SCREEN_SENSORS = const(1)
 SCREEN_ABOUT = const(2)
+BLINK_DURATION_MS = const(170)
+IDLE_BLINK_BASE_MS = const(3000)
+IDLE_BLINK_SPREAD_MS = const(3000)
 
 
 class Button:
@@ -336,6 +339,18 @@ def previous_screen():
     beep(1300, 30)
 
 
+def schedule_idle_blink(now):
+    variation = (ldr_left[0] + ldr_right[0] + (now // 37)) % IDLE_BLINK_SPREAD_MS
+    next_idle_blink[0] = now + IDLE_BLINK_BASE_MS + variation
+
+
+def trigger_blink(now=None, duration=BLINK_DURATION_MS):
+    if now is None:
+        now = ticks_ms()
+    blink_until[0] = now + duration
+    schedule_idle_blink(now)
+
+
 print("")
 print("BlinkBuddy MicroPython firmware")
 print("Keep RIGHT released during power-up/reset/upload; it is ESP32-C3 GPIO8.")
@@ -389,10 +404,12 @@ movement = [0.0]
 target_eye_offset = [0]
 eye_offset = [0]
 blink_until = [0]
+next_idle_blink = [0]
 
 last_sensor = ticks_ms()
 last_ui = ticks_ms()
 last_debug = ticks_ms()
+schedule_idle_blink(last_sensor)
 
 beep(1800, 70)
 led.value(1)
@@ -408,12 +425,15 @@ while True:
         previous_screen()
         print("button=LEFT screen={}".format(screen[0]))
     if btn_ok.pressed():
-        blink_until[0] = ticks_ms() + 180
+        trigger_blink(now)
         beep(2200, 35)
         print("button=OK")
     if btn_right.pressed():
         next_screen()
         print("button=RIGHT screen={}".format(screen[0]))
+
+    if ticks_diff(now, next_idle_blink[0]) >= 0:
+        trigger_blink(now)
 
     if ticks_diff(now, last_sensor) >= 120:
         last_sensor = now
@@ -426,7 +446,7 @@ while True:
 
         _, _, _, movement[0] = lis.read()
         if movement[0] > 0.9:
-            blink_until[0] = ticks_ms() + 180
+            trigger_blink(now)
 
         led.value((now // 500) % 2)
 

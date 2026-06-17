@@ -12,7 +12,7 @@ It makes the board behave like an interactive OLED buddy:
 
 - Shows animated eyes on the OLED.
 - Moves the eyes left/right using the two light sensors.
-- Blinks/reacts when the board is moved or shaken.
+- Blinks naturally at idle and reacts when the board is moved or shaken.
 - Uses the three buttons as `LEFT`, `OK`, and `RIGHT`.
 - Beeps on button press and startup.
 - Blinks the status LED.
@@ -97,6 +97,7 @@ Main screen:
 - More light on the right sensor makes the eyes look right.
 - Similar light keeps the eyes centered.
 - Low light makes the eyes look sleepy.
+- With no button press or motion, the eyes still blink naturally every few seconds.
 - Shake or tilt causes a blink/react animation.
 
 Buttons:
