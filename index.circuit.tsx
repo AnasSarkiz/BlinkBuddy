@@ -207,8 +207,8 @@ export default () => (
 
 		<CC0603KRX7R9BB104
 			name="C1"
-			pcbX={12.5}
-			pcbY={0}
+			pcbX={28.6}
+			pcbY={6.5}
 			pcbRotation={0}
 			layer="top"
 		/>
