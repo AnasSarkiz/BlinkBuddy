@@ -17,10 +17,10 @@ import { TL3301AF160QG } from "./imports/TL3301AF160QG";
 import { TYPE_C_31_M_12 } from "./imports/TYPE_C_31_M_12";
 import { USBLC6_2SC6 } from "./imports/USBLC6_2SC6";
 import { XC6220B331MR_G } from "./imports/XC6220B331MR_G";
+import { BoardLinkQrSilkscreen } from "./BoardLinkQrSilkscreen";
 
 const signalTrace = "0.18mm";
 const powerTrace = "0.45mm";
-
 export default () => (
 	<board
 		width="82mm"
@@ -607,8 +607,8 @@ export default () => (
 		<silkscreentext
 			text="created with tscircuit"
 			pcbX={0}
-			pcbY={0}
-			fontSize="4mm"
+			pcbY={-10}
+			fontSize="3.5mm"
 			anchorAlignment="center"
 			pcbRotation={180}
 			layers={["bottom"]}
@@ -633,5 +633,6 @@ export default () => (
 			pcbRotation={180}
 			layers={["bottom"]}
 		/>
+		<BoardLinkQrSilkscreen />
 	</board>
 );
