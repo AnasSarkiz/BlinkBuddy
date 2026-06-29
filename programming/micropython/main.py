@@ -123,7 +123,7 @@ PIN_I2C_SDA = const(4)
 PIN_I2C_SCL = const(5)
 PIN_BUTTON_LEFT = const(6)
 PIN_BUTTON_OK = const(7)
-PIN_BUTTON_RIGHT = const(8)
+PIN_BUTTON_RIGHT = const(18)
 PIN_BUZZER = const(10)
 
 OLED_WIDTH = const(128)
@@ -353,9 +353,8 @@ def trigger_blink(now=None, duration=BLINK_DURATION_MS):
 
 print("")
 print("BlinkBuddy MicroPython firmware")
-print("Keep RIGHT released during power-up/reset/upload; it is ESP32-C3 GPIO8.")
 print("Pins: LDR L/R=GPIO0/GPIO1, LED=GPIO3, I2C SDA/SCL=GPIO4/GPIO5")
-print("Pins: buttons L/OK/R=GPIO6/GPIO7/GPIO8, buzzer=GPIO10")
+print("Pins: buttons L/OK/R=GPIO6/GPIO7/GPIO18, buzzer=GPIO10")
 
 led = Pin(PIN_LED, Pin.OUT)
 led.value(0)

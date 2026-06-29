@@ -34,7 +34,6 @@ The buzzer is switched by Q1 from an ESP32-C3 GPIO through base resistor R8. The
 ## Firmware Expectations
 
 - Configure button GPIOs with internal pullups.
-- Do not hold the RIGHT button while plugging in USB-C or resetting the board; it is on ESP32-C3 `GPIO8`, which is also a boot strapping pin.
 - Read the LDR ADC channels with averaging or filtering.
 - Use I2C for the OLED and LIS3DHTR accelerometer.
 - Drive the buzzer GPIO with a tone/PWM output if sound patterns are needed.
@@ -85,4 +84,4 @@ Latest local review, May 23, 2026:
 
 ## Production / Bring-Up Notes
 
-Read `BOARD_REVIEW.md` for the order review and first-article checklist. The first prototype order is now under production, so the next critical steps are incoming inspection, firmware flashing, USB serial verification, OLED/button/sensor bring-up, and enclosure fit checking. For first bring-up, keep the RIGHT button released during power-on/reset because it shares ESP32-C3 `GPIO8`.
+Read `BOARD_REVIEW.md` for the order review and first-article checklist. The first prototype order is now under production, so the next critical steps are incoming inspection, firmware flashing, USB serial verification, OLED/button/sensor bring-up, and enclosure fit checking.

@@ -62,7 +62,7 @@ export default () => (
 			layer="top"
 		/>
 
-		<LIS3DHTR name="U4" pcbX={-37} pcbY={-9} pcbRotation={0} layer="top" />
+		<LIS3DHTR name="U4" pcbX={-35.5} pcbY={-9} pcbRotation={0} layer="top" />
 		<GL5528
 			name="LDR_L"
 			pcbX={-31.5}
@@ -221,7 +221,7 @@ export default () => (
 		/>
 		<CC0603KRX7R9BB104
 			name="C3"
-			pcbX={-33.5}
+			pcbX={-32.5}
 			pcbY={-9}
 			pcbRotation={90}
 			layer="top"
@@ -251,6 +251,13 @@ export default () => (
 			name="C7"
 			pcbX={8.5}
 			pcbY={-4}
+			pcbRotation={90}
+			layer="top"
+		/>
+		<CL10A106MQ8NNNC
+			name="C8"
+			pcbX={25.2}
+			pcbY={7.3}
 			pcbRotation={90}
 			layer="top"
 		/>
@@ -424,7 +431,7 @@ export default () => (
 
 		<trace from=".U1 > .IO6" to="net.BTN_LEFT" thickness={signalTrace} />
 		<trace from=".U1 > .IO7" to="net.BTN_OK" thickness={signalTrace} />
-		<trace from=".U1 > .IO8" to="net.BTN_RIGHT" thickness={signalTrace} />
+		<trace from=".U1 > .IO18" to="net.BTN_RIGHT" thickness={signalTrace} />
 		<trace from=".SW1 > .pin1" to="net.BTN_LEFT" thickness={signalTrace} />
 		<trace from=".SW1 > .pin4" to="net.BTN_LEFT" thickness={signalTrace} />
 		<trace from=".SW1 > .pin2" to="net.GND" thickness={signalTrace} />
@@ -454,6 +461,8 @@ export default () => (
 		<trace from=".U1 > .EN" to="net.ESP_EN" thickness={signalTrace} />
 		<trace from=".C7 > .pin1" to="net.ESP_EN" thickness={signalTrace} />
 		<trace from=".C7 > .pin2" to="net.GND" thickness={signalTrace} />
+		<trace from=".C8 > .pin1" to="net.V3_3" thickness={powerTrace} />
+		<trace from=".C8 > .pin2" to="net.GND" thickness={powerTrace} />
 		<trace from=".R10 > .pin1" to="net.USB_DTR" thickness={signalTrace} />
 		<trace from=".R10 > .pin2" to=".Q2 > .B" thickness={signalTrace} />
 		<trace from=".Q2 > .E" to="net.USB_RTS" thickness={signalTrace} />

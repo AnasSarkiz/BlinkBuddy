@@ -13,7 +13,7 @@ constexpr uint8_t I2cSda = 4;
 constexpr uint8_t I2cScl = 5;
 constexpr uint8_t ButtonLeft = 6;
 constexpr uint8_t ButtonOk = 7;
-constexpr uint8_t ButtonRight = 8;
+constexpr uint8_t ButtonRight = 18;
 constexpr uint8_t Buzzer = 10;
 } // namespace Pins
 

@@ -123,9 +123,9 @@ U3 has been upgraded to `XC6220B331MR-G`, JLC `C86534`, a fixed 3.3 V SOT-25 LDO
 
 The replacement uses the existing regulator area with a small SOT-25 footprint. Its enable pin `CE` is tied to `VBUS_5V`, so the 3.3 V rail turns on automatically when USB power is present. C5 remains on the input side and C6 remains on the output side.
 
-### P2 - GPIO8 Button Can Affect Boot If Held During Reset
+### Resolved - GPIO8 Button Boot Strap Risk
 
-`BTN_RIGHT` uses ESP32-C3 `IO8`, and the button shorts it to ground. GPIO8 is also an ESP32-C3 strapping pin, so holding the right button while plugging in USB or resetting can affect boot. Normal use should be fine because the firmware enables an internal pull-up and the button is normally open. The README and programming notes now warn users not to hold RIGHT during reset. If this board is revised, move that button to a non-strapping GPIO or add a stronger external pull-up strategy verified against Espressif's strapping table.
+`BTN_RIGHT` has been moved from ESP32-C3 `IO8` to `IO18`, so the right button no longer pulls the GPIO8 boot strapping pin low during reset. Firmware pin maps and bring-up notes now use GPIO18 for RIGHT.
 
 ## Live JLC Stock Spot Check
 

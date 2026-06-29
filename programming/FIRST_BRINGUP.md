@@ -17,10 +17,8 @@ Main connections:
 | I2C SCL: OLED, LIS3DHTR, Qwiic | GPIO5 |
 | LEFT button | GPIO6, active low |
 | OK button | GPIO7, active low |
-| RIGHT button | GPIO8, active low, boot strap pin |
+| RIGHT button | GPIO18, active low |
 | Buzzer drive | GPIO10 |
-
-Important: do not hold RIGHT while plugging in USB-C, resetting, or uploading. RIGHT is on GPIO8, which affects ESP32-C3 boot strapping.
 
 ## 1. Inspect Before Power
 
@@ -137,7 +135,7 @@ Use the serial log first:
 | Symptom | First check |
 | --- | --- |
 | No USB port | Cable, USB-C connector J1, CH340C U2, regulator U3 |
-| USB port appears but no upload | Keep RIGHT released, retry lower baud, inspect EN/BOOT auto-program parts |
+| USB port appears but no upload | Retry lower baud, inspect EN/BOOT auto-program parts |
 | OLED blank but serial works | I2C scan, OLED address `0x3c`/`0x3d`, OLED soldering |
 | `LIS3DH: missing` | I2C scan should include `0x19`, inspect U4 soldering |
 | LDR values stuck | Inspect LDRs and R6/R7 dividers |

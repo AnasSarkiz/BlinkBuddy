@@ -98,7 +98,7 @@ Controls:
 - `OK`: blink/beep.
 - `RIGHT`: next screen.
 
-Boot/reset caution: do not hold `RIGHT` while plugging in USB-C, resetting, or flashing. It is on ESP32-C3 `GPIO8`, which is also a boot strapping pin.
+The `RIGHT` button is on ESP32-C3 `GPIO18`.
 
 Screens:
 
