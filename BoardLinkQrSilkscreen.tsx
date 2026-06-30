@@ -1,328 +1,48 @@
-const boardLinkQrSize = 33;
-const boardLinkQrModuleSizeMm = 0.4;
-const boardLinkQrCenter = { x:0, y: 10 };
-const boardLinkQrRuns = [
-	[0, 0, 7],
-	[8, 0, 1],
-	[10, 0, 2],
-	[13, 0, 2],
-	[17, 0, 2],
-	[20, 0, 3],
-	[26, 0, 7],
-	[0, 1, 1],
-	[6, 1, 1],
-	[8, 1, 1],
-	[10, 1, 1],
-	[12, 1, 3],
-	[18, 1, 2],
-	[21, 1, 2],
-	[24, 1, 1],
-	[26, 1, 1],
-	[32, 1, 1],
-	[0, 2, 1],
-	[2, 2, 3],
-	[6, 2, 1],
-	[8, 2, 1],
-	[12, 2, 3],
-	[16, 2, 1],
-	[19, 2, 6],
-	[26, 2, 1],
-	[28, 2, 3],
-	[32, 2, 1],
-	[0, 3, 1],
-	[2, 3, 3],
-	[6, 3, 1],
-	[10, 3, 1],
-	[12, 3, 1],
-	[14, 3, 1],
-	[16, 3, 1],
-	[18, 3, 4],
-	[24, 3, 1],
-	[26, 3, 1],
-	[28, 3, 3],
-	[32, 3, 1],
-	[0, 4, 1],
-	[2, 4, 3],
-	[6, 4, 1],
-	[8, 4, 1],
-	[10, 4, 2],
-	[13, 4, 1],
-	[15, 4, 2],
-	[21, 4, 1],
-	[26, 4, 1],
-	[28, 4, 3],
-	[32, 4, 1],
-	[0, 5, 1],
-	[6, 5, 1],
-	[9, 5, 3],
-	[13, 5, 1],
-	[15, 5, 2],
-	[19, 5, 1],
-	[21, 5, 3],
-	[26, 5, 1],
-	[32, 5, 1],
-	[0, 6, 7],
-	[8, 6, 1],
-	[10, 6, 1],
-	[12, 6, 1],
-	[14, 6, 1],
-	[16, 6, 1],
-	[18, 6, 1],
-	[20, 6, 1],
-	[22, 6, 1],
-	[24, 6, 1],
-	[26, 6, 7],
-	[9, 7, 1],
-	[11, 7, 1],
-	[13, 7, 1],
-	[15, 7, 2],
-	[22, 7, 3],
-	[0, 8, 1],
-	[3, 8, 6],
-	[10, 8, 1],
-	[12, 8, 1],
-	[14, 8, 1],
-	[25, 8, 1],
-	[28, 8, 1],
-	[30, 8, 3],
-	[0, 9, 1],
-	[2, 9, 2],
-	[10, 9, 6],
-	[17, 9, 3],
-	[21, 9, 1],
-	[23, 9, 1],
-	[28, 9, 3],
-	[32, 9, 1],
-	[1, 10, 2],
-	[5, 10, 2],
-	[8, 10, 6],
-	[15, 10, 2],
-	[21, 10, 1],
-	[23, 10, 1],
-	[26, 10, 1],
-	[28, 10, 5],
-	[0, 11, 1],
-	[3, 11, 2],
-	[11, 11, 1],
-	[13, 11, 1],
-	[16, 11, 1],
-	[18, 11, 3],
-	[23, 11, 2],
-	[26, 11, 2],
-	[30, 11, 3],
-	[0, 12, 2],
-	[3, 12, 1],
-	[6, 12, 2],
-	[9, 12, 1],
-	[12, 12, 2],
-	[15, 12, 1],
-	[17, 12, 1],
-	[24, 12, 1],
-	[26, 12, 3],
-	[1, 13, 1],
-	[3, 13, 3],
-	[7, 13, 1],
-	[9, 13, 2],
-	[12, 13, 3],
-	[18, 13, 3],
-	[23, 13, 2],
-	[27, 13, 1],
-	[30, 13, 1],
-	[0, 14, 1],
-	[2, 14, 2],
-	[6, 14, 3],
-	[11, 14, 5],
-	[18, 14, 4],
-	[26, 14, 1],
-	[0, 15, 1],
-	[2, 15, 1],
-	[4, 15, 1],
-	[8, 15, 1],
-	[10, 15, 1],
-	[12, 15, 2],
-	[16, 15, 1],
-	[20, 15, 1],
-	[24, 15, 2],
-	[29, 15, 2],
-	[32, 15, 1],
-	[0, 16, 1],
-	[6, 16, 1],
-	[11, 16, 5],
-	[20, 16, 1],
-	[22, 16, 1],
-	[24, 16, 6],
-	[1, 17, 1],
-	[5, 17, 1],
-	[8, 17, 2],
-	[13, 17, 3],
-	[17, 17, 6],
-	[25, 17, 2],
-	[28, 17, 1],
-	[30, 17, 1],
-	[32, 17, 1],
-	[0, 18, 2],
-	[4, 18, 1],
-	[6, 18, 2],
-	[9, 18, 1],
-	[12, 18, 1],
-	[14, 18, 2],
-	[17, 18, 3],
-	[21, 18, 1],
-	[23, 18, 1],
-	[26, 18, 2],
-	[29, 18, 4],
-	[7, 19, 1],
-	[9, 19, 5],
-	[15, 19, 1],
-	[20, 19, 1],
-	[23, 19, 2],
-	[26, 19, 1],
-	[28, 19, 4],
-	[0, 20, 2],
-	[3, 20, 4],
-	[11, 20, 1],
-	[13, 20, 1],
-	[15, 20, 2],
-	[18, 20, 2],
-	[27, 20, 1],
-	[29, 20, 1],
-	[31, 20, 2],
-	[0, 21, 1],
-	[3, 21, 1],
-	[7, 21, 3],
-	[11, 21, 1],
-	[13, 21, 1],
-	[17, 21, 1],
-	[21, 21, 3],
-	[27, 21, 3],
-	[0, 22, 1],
-	[2, 22, 1],
-	[4, 22, 4],
-	[10, 22, 1],
-	[13, 22, 2],
-	[19, 22, 3],
-	[23, 22, 10],
-	[0, 23, 1],
-	[3, 23, 3],
-	[8, 23, 1],
-	[10, 23, 1],
-	[12, 23, 1],
-	[14, 23, 2],
-	[17, 23, 4],
-	[23, 23, 1],
-	[27, 23, 1],
-	[30, 23, 2],
-	[0, 24, 2],
-	[3, 24, 2],
-	[6, 24, 2],
-	[11, 24, 2],
-	[20, 24, 1],
-	[23, 24, 7],
-	[31, 24, 2],
-	[8, 25, 1],
-	[10, 25, 1],
-	[14, 25, 1],
-	[16, 25, 3],
-	[22, 25, 1],
-	[24, 25, 1],
-	[28, 25, 1],
-	[30, 25, 1],
-	[0, 26, 7],
-	[8, 26, 4],
-	[14, 26, 2],
-	[17, 26, 1],
-	[19, 26, 1],
-	[21, 26, 1],
-	[23, 26, 2],
-	[26, 26, 1],
-	[28, 26, 1],
-	[30, 26, 1],
-	[0, 27, 1],
-	[6, 27, 1],
-	[8, 27, 1],
-	[12, 27, 2],
-	[15, 27, 5],
-	[23, 27, 2],
-	[28, 27, 5],
-	[0, 28, 1],
-	[2, 28, 3],
-	[6, 28, 1],
-	[8, 28, 1],
-	[13, 28, 5],
-	[19, 28, 2],
-	[22, 28, 7],
-	[0, 29, 1],
-	[2, 29, 3],
-	[6, 29, 1],
-	[8, 29, 1],
-	[10, 29, 3],
-	[16, 29, 3],
-	[25, 29, 1],
-	[27, 29, 1],
-	[29, 29, 1],
-	[31, 29, 2],
-	[0, 30, 1],
-	[2, 30, 3],
-	[6, 30, 1],
-	[10, 30, 1],
-	[13, 30, 3],
-	[17, 30, 3],
-	[21, 30, 1],
-	[23, 30, 2],
-	[27, 30, 2],
-	[30, 30, 3],
-	[0, 31, 1],
-	[6, 31, 1],
-	[11, 31, 1],
-	[14, 31, 1],
-	[20, 31, 1],
-	[26, 31, 7],
-	[0, 32, 7],
-	[8, 32, 1],
-	[13, 32, 3],
-	[17, 32, 1],
-	[19, 32, 1],
-	[22, 32, 4],
-	[27, 32, 2],
-] as const;
+const boardLinkQrGraphicSizeMm = 24;
+const boardLinkQrCenter = { x: 0, y: 10 };
+const boardLinkQrViewBoxSize = 60;
+const boardLinkQrInset = (boardLinkQrViewBoxSize - 33) / 2;
 
-const mm = (value: number) => `${Number(value.toFixed(3))}mm`;
+const boardLinkQrPath =
+	"M0 0h7v1H0zM8 0h1v1H8zM10 0h2v1H10zM13 0h2v1H13zM17 0h2v1H17zM20 0h3v1H20zM26 0h7v1H26zM0 1h1v1H0zM6 1h1v1H6zM8 1h1v1H8zM10 1h1v1H10zM12 1h3v1H12zM18 1h2v1H18zM21 1h2v1H21zM24 1h1v1H24zM26 1h1v1H26zM32 1h1v1H32zM0 2h1v1H0zM2 2h3v1H2zM6 2h1v1H6zM8 2h1v1H8zM12 2h3v1H12zM16 2h1v1H16zM19 2h6v1H19zM26 2h1v1H26zM28 2h3v1H28zM32 2h1v1H32zM0 3h1v1H0zM2 3h3v1H2zM6 3h1v1H6zM10 3h1v1H10zM12 3h1v1H12zM14 3h1v1H14zM16 3h1v1H16zM18 3h4v1H18zM24 3h1v1H24zM26 3h1v1H26zM28 3h3v1H28zM32 3h1v1H32zM0 4h1v1H0zM2 4h3v1H2zM6 4h1v1H6zM8 4h1v1H8zM10 4h2v1H10zM13 4h1v1H13zM15 4h2v1H15zM21 4h1v1H21zM26 4h1v1H26zM28 4h3v1H28zM32 4h1v1H32zM0 5h1v1H0zM6 5h1v1H6zM9 5h3v1H9zM13 5h1v1H13zM15 5h2v1H15zM19 5h1v1H19zM21 5h3v1H21zM26 5h1v1H26zM32 5h1v1H32zM0 6h7v1H0zM8 6h1v1H8zM10 6h1v1H10zM12 6h1v1H12zM14 6h1v1H14zM16 6h1v1H16zM18 6h1v1H18zM20 6h1v1H20zM22 6h1v1H22zM24 6h1v1H24zM26 6h7v1H26zM9 7h1v1H9zM11 7h1v1H11zM13 7h1v1H13zM15 7h2v1H15zM22 7h3v1H22zM0 8h1v1H0zM3 8h6v1H3zM10 8h1v1H10zM12 8h1v1H12zM14 8h1v1H14zM25 8h1v1H25zM28 8h1v1H28zM30 8h3v1H30zM0 9h1v1H0zM2 9h2v1H2zM10 9h6v1H10zM17 9h3v1H17zM21 9h1v1H21zM23 9h1v1H23zM28 9h3v1H28zM32 9h1v1H32zM1 10h2v1H1zM5 10h2v1H5zM8 10h6v1H8zM15 10h2v1H15zM21 10h1v1H21zM23 10h1v1H23zM26 10h1v1H26zM28 10h5v1H28zM0 11h1v1H0zM3 11h2v1H3zM11 11h1v1H11zM13 11h1v1H13zM16 11h1v1H16zM18 11h3v1H18zM23 11h2v1H23zM26 11h2v1H26zM30 11h3v1H30zM0 12h2v1H0zM3 12h1v1H3zM6 12h2v1H6zM9 12h1v1H9zM12 12h2v1H12zM15 12h1v1H15zM17 12h1v1H17zM24 12h1v1H24zM26 12h3v1H26zM1 13h1v1H1zM3 13h3v1H3zM7 13h1v1H7zM9 13h2v1H9zM12 13h3v1H12zM18 13h3v1H18zM23 13h2v1H23zM27 13h1v1H27zM30 13h1v1H30zM0 14h1v1H0zM2 14h2v1H2zM6 14h3v1H6zM11 14h5v1H11zM18 14h4v1H18zM26 14h1v1H26zM0 15h1v1H0zM2 15h1v1H2zM4 15h1v1H4zM8 15h1v1H8zM10 15h1v1H10zM12 15h2v1H12zM16 15h1v1H16zM20 15h1v1H20zM24 15h2v1H24zM29 15h2v1H29zM32 15h1v1H32zM0 16h1v1H0zM6 16h1v1H6zM11 16h5v1H11zM20 16h1v1H20zM22 16h1v1H22zM24 16h6v1H24zM1 17h1v1H1zM5 17h1v1H5zM8 17h2v1H8zM13 17h3v1H13zM17 17h6v1H17zM25 17h2v1H25zM28 17h1v1H28zM30 17h1v1H30zM32 17h1v1H32zM0 18h2v1H0zM4 18h1v1H4zM6 18h2v1H6zM9 18h1v1H9zM12 18h1v1H12zM14 18h2v1H14zM17 18h3v1H17zM21 18h1v1H21zM23 18h1v1H23zM26 18h2v1H26zM29 18h4v1H29zM7 19h1v1H7zM9 19h5v1H9zM15 19h1v1H15zM20 19h1v1H20zM23 19h2v1H23zM26 19h1v1H26zM28 19h4v1H28zM0 20h2v1H0zM3 20h4v1H3zM11 20h1v1H11zM13 20h1v1H13zM15 20h2v1H15zM18 20h2v1H18zM27 20h1v1H27zM29 20h1v1H29zM31 20h2v1H31zM0 21h1v1H0zM3 21h1v1H3zM7 21h3v1H7zM11 21h1v1H11zM13 21h1v1H13zM17 21h1v1H17zM21 21h3v1H21zM27 21h3v1H27zM0 22h1v1H0zM2 22h1v1H2zM4 22h4v1H4zM10 22h1v1H10zM13 22h2v1H13zM19 22h3v1H19zM23 22h10v1H23zM0 23h1v1H0zM3 23h3v1H3zM8 23h1v1H8zM10 23h1v1H10zM12 23h1v1H12zM14 23h2v1H14zM17 23h4v1H17zM23 23h1v1H23zM27 23h1v1H27zM30 23h2v1H30zM0 24h2v1H0zM3 24h2v1H3zM6 24h2v1H6zM11 24h2v1H11zM20 24h1v1H20zM23 24h7v1H23zM31 24h2v1H31zM8 25h1v1H8zM10 25h1v1H10zM14 25h1v1H14zM16 25h3v1H16zM22 25h1v1H22zM24 25h1v1H24zM28 25h1v1H28zM30 25h1v1H30zM0 26h7v1H0zM8 26h4v1H8zM14 26h2v1H14zM17 26h1v1H17zM19 26h1v1H19zM21 26h1v1H21zM23 26h2v1H23zM26 26h1v1H26zM28 26h1v1H28zM30 26h1v1H30zM0 27h1v1H0zM6 27h1v1H6zM8 27h1v1H8zM12 27h2v1H12zM15 27h5v1H15zM23 27h2v1H23zM28 27h5v1H28zM0 28h1v1H0zM2 28h3v1H2zM6 28h1v1H6zM8 28h1v1H8zM13 28h5v1H13zM19 28h2v1H19zM22 28h7v1H22zM0 29h1v1H0zM2 29h3v1H2zM6 29h1v1H6zM8 29h1v1H8zM10 29h3v1H10zM16 29h3v1H16zM25 29h1v1H25zM27 29h1v1H27zM29 29h1v1H29zM31 29h2v1H31zM0 30h1v1H0zM2 30h3v1H2zM6 30h1v1H6zM10 30h1v1H10zM13 30h3v1H13zM17 30h3v1H17zM21 30h1v1H21zM23 30h2v1H23zM27 30h2v1H27zM30 30h3v1H30zM0 31h1v1H0zM6 31h1v1H6zM11 31h1v1H11zM14 31h1v1H14zM20 31h1v1H20zM26 31h7v1H26zM0 32h7v1H0zM8 32h1v1H8zM13 32h3v1H13zM17 32h1v1H17zM19 32h1v1H19zM22 32h4v1H22zM27 32h2v1H27z";
 
-const BoardLinkQrRun = ({
-	x,
-	y,
-	width,
-}: {
-	x: number;
-	y: number;
-	width: number;
-}) => (
-	<silkscreenrect
-		layer="bottom"
-		filled
-		width={mm(width * boardLinkQrModuleSizeMm)}
-		height={mm(boardLinkQrModuleSizeMm)}
-		pcbX={
-			boardLinkQrCenter.x +
-			(x + width / 2 - boardLinkQrSize / 2) * boardLinkQrModuleSizeMm
-		}
-		pcbY={
-			boardLinkQrCenter.y +
-			(boardLinkQrSize / 2 - y - 0.5) * boardLinkQrModuleSizeMm
-		}
-	/>
-);
+const boardLinkQrStrokePath = Array.from(
+	boardLinkQrPath.matchAll(/M(\d+) (\d+)h(\d+)v1H\d+z/g),
+)
+	.map((match) => {
+		const x = boardLinkQrInset + Number(match[1]);
+		const y = boardLinkQrInset + Number(match[2]) + 0.5;
+		const width = Number(match[3]);
+		const x1 = x + 0.5;
+		const x2 = Math.max(x1 + 0.001, x + width - 0.5);
+		return `M${x1} ${y}H${x2}`;
+	})
+	.join("");
+
+const boardLinkQrSvg =
+	`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boardLinkQrViewBoxSize} ${boardLinkQrViewBoxSize}">` +
+	`<path fill="none" stroke="#000" d="${boardLinkQrStrokePath}"/></svg>`;
+
+const boardLinkQrImageUrl = `data:image/svg+xml,${encodeURIComponent(
+	boardLinkQrSvg,
+)}`;
 
 export const BoardLinkQrSilkscreen = () => (
 	<>
-	<silkscreentext pcbX={0} pcbRotation={180} fontSize={3} layer={"bottom"} text="Open project" />
-		{boardLinkQrRuns.map(([x, y, width]) => (
-			<BoardLinkQrRun
-				key={`board-link-qr-${x}-${y}-${width}`}
-				x={x}
-				y={y}
-				width={width}
-			/>
-		))}
+		<silkscreentext
+			pcbX={0}
+			pcbRotation={180}
+			fontSize={3}
+			layer="bottom"
+			text="Open project"
+		/>
+		<silkscreengraphic
+			imageUrl={boardLinkQrImageUrl}
+			width={`${boardLinkQrGraphicSizeMm}mm`}
+			height={`${boardLinkQrGraphicSizeMm}mm`}
+			pcbX={boardLinkQrCenter.x}
+			pcbY={boardLinkQrCenter.y}
+			layer="bottom"
+		/>
 	</>
 );

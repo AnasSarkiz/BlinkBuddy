@@ -1,6 +1,6 @@
 {
   "name": "@tsci/AnasSarkiz.BlinkBuddy",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A tscircuit component package",
   "main": "index.tsx",
   "keywords": [
